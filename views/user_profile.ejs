@@ -1,0 +1,231 @@
+<!-- Main content -->
+<div class="flex flex-col flex-1 overflow-hidden">
+    <!-- Top header -->
+    <!-- <header class="flex justify-between items-center py-4 px-6 bg-white border-b border-gray-200">
+        
+
+    </header> -->
+
+    <!-- Main content area -->
+    <main class="flex-1 overflow-y-auto p-6 bg-gray-50">
+        <!-- Profile Form Container -->
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl font-medium text-gray-800">Personal Information</h2>
+                <div class="flex items-center">
+                    <div class="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center mr-4">
+                        <i class="fas fa-user text-3xl text-blue-500"></i>
+                    </div>
+                </div>
+            </div>
+
+            <form id="profile-form" action="/auth/update" method="POST">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="firstName">
+                            First Name*
+                        </label>
+                        <input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="firstName" name="firstName" type="text" value="<%= user1.first_name %>" required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="lastName">
+                            Last Name*
+                        </label>
+                        <input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="lastName" name="lastName" type="text" value="<%= user1.last_name %>" required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
+                            Email Address*
+                        </label>
+                        <input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="email" name="email" type="email" value="<%= user1.email %>" required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="phoneNumber">
+                            Phone Number
+                        </label>
+                        <input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="phoneNumber" name="phoneNumber" type="tel" value="<%= user1.phone_number || '' %>">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="specialization">
+                            Specialization
+                        </label>
+                        <select
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="specialization" name="specialization">
+                            <option value="" <%= !user1.specialization ? 'selected' : '' %>>Select your specialty</option>
+                            <option value="neuroradiology" <%= user1.specialization === 'neuroradiology' ? 'selected' : '' %>>Neuroradiology</option>
+                            <option value="radiology" <%= user1.specialization === 'radiology' ? 'selected' : '' %>>Radiology</option>
+                            <option value="neurology" <%= user1.specialization === 'neurology' ? 'selected' : '' %>>Neurology</option>
+                            <option value="neurosurgery" <%= user1.specialization === 'neurosurgery' ? 'selected' : '' %>>Neurosurgery</option>
+                            <option value="oncology" <%= user1.specialization === 'oncology' ? 'selected' : '' %>>Oncology</option>
+                            <option value="other" <%= user1.specialization === 'other' ? 'selected' : '' %>>Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="hospitalAffiliation">
+                            Hospital Affiliation
+                        </label>
+                        <input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="hospitalAffiliation" name="hospitalAffiliation" type="text" value="<%= user1.hospital_affiliation || '' %>">
+                    </div>
+                </div>
+
+                <div class="flex justify-end mt-6">
+                    <button type="submit" id="update-profile-btn"
+                        class="px-4 py-2 gradient-bg text-white rounded-md hover:opacity-90">
+                        Update Information
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Change Password Section -->
+        <div class="bg-white rounded-lg shadow-sm p-6">
+            <h3 class="text-lg font-medium text-gray-800 mb-4">Change Password</h3>
+            <form id="password-form" action="/auth/change-password" method="POST">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="currentPassword">
+                            Current Password*
+                        </label>
+                        <input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="currentPassword" name="currentPassword" type="password"
+                            placeholder="Enter current password" required>
+                    </div>
+                    <div></div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="newPassword">
+                            New Password*
+                        </label>
+                        <input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="newPassword" name="newPassword" type="password" placeholder="Enter new password" required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="confirmPassword">
+                            Confirm New Password*
+                        </label>
+                        <input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="confirmPassword" name="confirmPassword" type="password"
+                            placeholder="Confirm new password" required>
+                    </div>
+                </div>
+
+                <div class="flex justify-end mt-6">
+                    <button type="submit" id="change-password-btn"
+                        class="px-4 py-2 gradient-bg text-white rounded-md hover:opacity-90">
+                        Change Password
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+
+<!-- Confirmation Modal for Logout -->
+<div id="logout-modal" class="hidden fixed inset-0 z-50 overflow-y-auto">
+    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+            <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+        </div>
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        <div
+            class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div class="sm:flex sm:items-start">
+                    <div
+                        class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                        <i class="fas fa-exclamation-triangle text-red-600"></i>
+                    </div>
+                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900">Logout Confirmation</h3>
+                        <div class="mt-2">
+                            <p class="text-sm text-gray-500">Are you sure you want to logout from your account?</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button type="button" id="confirm-logout"
+                    class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">
+                    Logout
+                </button>
+                <button type="button" id="cancel-logout"
+                    class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Elements
+        const passwordForm = document.getElementById('password-form');
+        const logoutBtn = document.getElementById('logout-btn');
+        const logoutModal = document.getElementById('logout-modal');
+        const cancelLogout = document.getElementById('cancel-logout');
+        const confirmLogout = document.getElementById('confirm-logout');
+        const logoutForm = document.getElementById('logout-form');
+
+        // Handle mobile menu toggle
+        const menuButton = document.querySelector('button.md\\:hidden');
+        if (menuButton) {
+            menuButton.addEventListener('click', function () {
+                const sidebar = document.querySelector('.md\\:flex.md\\:flex-shrink-0');
+                if (sidebar) {
+                    sidebar.classList.toggle('hidden');
+                }
+            });
+        }
+
+        // Password form validation before submission
+        passwordForm.addEventListener('submit', function (e) {
+            // Validate passwords
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (newPassword !== confirmPassword) {
+                e.preventDefault();
+                alert('New password and confirmation do not match.');
+                return false;
+            }
+            
+            // Form will submit normally if validation passes
+        });
+
+        // Logout button
+        logoutBtn.addEventListener('click', function () {
+            logoutModal.classList.remove('hidden');
+        });
+
+        // Cancel logout
+        cancelLogout.addEventListener('click', function () {
+            logoutModal.classList.add('hidden');
+        });
+        
+        // Confirm logout
+        confirmLogout.addEventListener('click', function() {
+            logoutForm.submit();
+        });
+
+        // Close modal when clicking outside
+        logoutModal.addEventListener('click', function (e) {
+            if (e.target === logoutModal) {
+                logoutModal.classList.add('hidden');
+            }
+        });
+    });
+</script>

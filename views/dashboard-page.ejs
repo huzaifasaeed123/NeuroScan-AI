@@ -1,0 +1,335 @@
+
+<div class="flex-1 p-6 overflow-hidden bg-gray-100">
+    <div class="mb-6">
+        <p class="text-sm text-gray-600">Welcome Back, <%= user.name %></p>
+    </div>
+
+    <!-- Statistics cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+        <div class="bg-white rounded-lg shadow-sm p-6 flex items-center">
+            <div class="p-3 rounded-full bg-blue-100 text-blue-600 mr-4">
+                <i class="fas fa-user-injured"></i>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-gray-500">Total Patients</p>
+                <p class="text-2xl font-semibold text-gray-800"><%= stats.totalPatients %></p>
+                <p class="text-xs <%= stats.patientGrowth >= 0 ? 'text-green-500' : 'text-red-500' %> flex items-center mt-1">
+                    <i class="fas fa-arrow-<%= stats.patientGrowth >= 0 ? 'up' : 'down' %> mr-1"></i> 
+                    <%= Math.abs(stats.patientGrowth) %>% from last month
+                </p>
+            </div>
+        </div>
+        <div class="bg-white rounded-lg shadow-sm p-6 flex items-center">
+            <div class="p-3 rounded-full bg-green-100 text-green-600 mr-4">
+                <i class="fas fa-file-medical-alt"></i>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-gray-500">Total Scans</p>
+                <p class="text-2xl font-semibold text-gray-800"><%= stats.totalScans %></p>
+                <p class="text-xs <%= stats.scanGrowth >= 0 ? 'text-green-500' : 'text-red-500' %> flex items-center mt-1">
+                    <i class="fas fa-arrow-<%= stats.scanGrowth >= 0 ? 'up' : 'down' %> mr-1"></i> 
+                    <%= Math.abs(stats.scanGrowth) %>% from last month
+                </p>
+            </div>
+        </div>
+        <div class="bg-white rounded-lg shadow-sm p-6 flex items-center">
+            <div class="p-3 rounded-full bg-yellow-100 text-yellow-600 mr-4">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-gray-500">Positive Findings</p>
+                <p class="text-2xl font-semibold text-gray-800"><%= stats.positiveFindings %></p>
+                <p class="text-xs text-yellow-500 flex items-center mt-1">
+                    <i class="fas fa-exclamation-circle mr-1"></i> 
+                    <%= stats.positivePercentage.toFixed(1) %>% of total scans
+                </p>
+            </div>
+        </div>
+        <div class="bg-white rounded-lg shadow-sm p-6 flex items-center">
+            <div class="p-3 rounded-full bg-indigo-100 text-indigo-600 mr-4">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-gray-500">Pending Analysis</p>
+                <p class="text-2xl font-semibold text-gray-800"><%= stats.pendingAnalysis %></p>
+                <p class="text-xs <%= stats.urgentCases > 0 ? 'text-red-500' : 'text-gray-500' %> flex items-center mt-1">
+                    <% if (stats.urgentCases > 0) { %>
+                        <i class="fas fa-arrow-up mr-1"></i> <%= stats.urgentCases %> urgent cases
+                    <% } else { %>
+                        <i class="fas fa-check mr-1"></i> No urgent cases
+                    <% } %>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <!-- Scan Trends Chart -->
+        <div class="bg-white rounded-lg shadow-sm p-6">
+            <h3 class="text-lg font-medium text-gray-800 mb-4">Scan Trends</h3>
+            <div>
+                <canvas id="scanTrendsChart" height="300"></canvas>
+            </div>
+        </div>
+        
+        <!-- Findings by Type -->
+        <div class="bg-white rounded-lg shadow-sm p-6">
+            <h3 class="text-lg font-medium text-gray-800 mb-4">Findings by Type</h3>
+            <div>
+                <canvas id="findingsChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent patients -->
+    <div class="bg-white rounded-lg shadow-sm mb-6">
+        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+            <h2 class="text-lg font-medium text-gray-800">Recent Patients</h2>
+            <a href="/patients" class="text-sm text-blue-600 hover:text-blue-800">View all</a>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Patient ID</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Age</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Scan</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <% if (recentPatients && recentPatients.length > 0) { %>
+                        <% recentPatients.forEach(patient => { %>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= patient.id %></td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="h-10 w-10 flex-shrink-0">
+                                            <% if (patient.avatar) { %>
+                                                <img class="h-10 w-10 rounded-full" src="<%= patient.avatar %>" alt="">
+                                            <% } else { %>
+                                                <div class="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
+                                                    <span class="text-sm font-medium text-gray-600">
+                                                        <%= patient.firstName.charAt(0) %><%= patient.lastName.charAt(0) %>
+                                                    </span>
+                                                </div>
+                                            <% } %>
+                                        </div>
+                                        <div class="ml-4">
+                                            <div class="text-sm font-medium text-gray-900"><%= patient.firstName %> <%= patient.lastName %></div>
+                                            <div class="text-sm text-gray-500"><%= patient.email %></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= patient.age %></td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <%= patient.lastScanDate ? new Date(patient.lastScanDate).toLocaleDateString() : 'No scan' %>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <% if (patient.status === 'normal') { %>
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Normal</span>
+                                    <% } else if (patient.status === 'pending') { %>
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending</span>
+                                    <% } else if (patient.status === 'urgent') { %>
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Urgent</span>
+                                    <% } else { %>
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800"><%= patient.status %></span>
+                                    <% } %>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <a href="/patients/<%= patient.id %>" class="text-blue-600 hover:text-blue-900 mr-3">View</a>
+                                    <a href="/scans/process/" class="text-green-600 hover:text-green-900">New Scan</a>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">No recent patients found</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Recent Scans -->
+    <div class="bg-white rounded-lg shadow-sm mb-6">
+        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+            <h2 class="text-lg font-medium text-gray-800">Recent Scans</h2>
+            <a href="/scans" class="text-sm text-blue-600 hover:text-blue-800">View all</a>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Scan ID</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Patient</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Result</th>
+                        <!-- <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th> -->
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <% if (recentScans && recentScans.length > 0) { %>
+                        <% recentScans.forEach(scan => { %>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= scan.id %></td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900"><%= scan.patientName %></div>
+                                    <div class="text-sm text-gray-500">ID: <%= scan.patientId %></div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= scan.type %></td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <%= new Date(scan.date).toLocaleDateString() %>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <% if (scan.result === 'normal') { %>
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Normal</span>
+                                    <% } else if (scan.result === 'pending') { %>
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending</span>
+                                    <% } else if (scan.result === 'positive') { %>
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Positive</span>
+                                    <% } else { %>
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800"><%= scan.result %></span>
+                                    <% } %>
+                                </td>
+                                <!-- <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <a href="/scans/<%= scan.id %>" class="text-blue-600 hover:text-blue-900 mr-3">View</a>
+                                    <a href="/reports/<%= scan.id %>" class="text-indigo-600 hover:text-indigo-900">Report</a>
+                                </td> -->
+                            </tr>
+                        <% }); %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">No recent scans found</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Include chart data as JSON in a hidden div -->
+<div id="chartData" style="display: none;" 
+     data-scan-trends='<%= JSON.stringify(chartData.scanTrends) %>'
+     data-findings-by-type='<%= JSON.stringify(chartData.findingsByType) %>'>
+</div>
+
+<!-- Graph scripts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Safely parse data from hidden div
+        let scanTrendsData, findingsByTypeData;
+        
+        try {
+            const chartDataElement = document.getElementById('chartData');
+            scanTrendsData = JSON.parse(chartDataElement.getAttribute('data-scan-trends'));
+            findingsByTypeData = JSON.parse(chartDataElement.getAttribute('data-findings-by-type'));
+        } catch (error) {
+            console.error('Error parsing chart data:', error);
+            // Provide fallback data if parsing fails
+            scanTrendsData = {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                totalScans: [0, 0, 0, 0, 0, 0],
+                positiveFindings: [0, 0, 0, 0, 0, 0]
+            };
+            findingsByTypeData = {
+                labels: ['No Data'],
+                data: [1]
+            };
+        }
+        
+        // Scan Trends Chart
+        const scanTrendsCtx = document.getElementById('scanTrendsChart').getContext('2d');
+        new Chart(scanTrendsCtx, {
+            type: 'line',
+            data: {
+                labels: scanTrendsData.labels,
+                datasets: [
+                    {
+                        label: 'Total Scans',
+                        data: scanTrendsData.totalScans,
+                        borderColor: 'rgba(16, 185, 129, 1)',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.3,
+                        fill: true
+                    },
+                    {
+                        label: 'Positive Findings',
+                        data: scanTrendsData.positiveFindings,
+                        borderColor: 'rgba(245, 158, 11, 1)',
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        tension: 0.3,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            }
+        });
+
+        // Findings by Type Chart
+        const findingsCtx = document.getElementById('findingsChart').getContext('2d');
+        new Chart(findingsCtx, {
+            type: 'doughnut',
+            data: {
+                labels: findingsByTypeData.labels,
+                datasets: [{
+                    data: findingsByTypeData.data,
+                    backgroundColor: [
+                        'rgba(59, 130, 246, 0.8)',
+                        'rgba(16, 185, 129, 0.8)',
+                        'rgba(245, 158, 11, 0.8)',
+                        'rgba(239, 68, 68, 0.8)',
+                        'rgba(139, 92, 246, 0.8)',
+                        'rgba(249, 115, 22, 0.8)',
+                        'rgba(147, 197, 253, 0.8)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                    }
+                }
+            }
+        });
+        
+        // Mobile menu toggle
+        const menuButton = document.querySelector('button.md\\:hidden');
+        if (menuButton) {
+            menuButton.addEventListener('click', function() {
+                const sidebar = document.querySelector('.md\\:flex.md\\:flex-shrink-0');
+                if (sidebar) {  
+                    sidebar.classList.toggle('hidden');
+                }
+            });
+        }
+    });
+</script>

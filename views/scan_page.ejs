@@ -1,0 +1,414 @@
+<!-- Main content area -->
+
+    <!-- Progress Steps -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center">
+                <div id="step-indicator-1"
+                    class="step-indicator completed flex items-center justify-center w-10 h-10 border-2 rounded-full font-medium text-sm shadow-sm">
+                    <i class="fas fa-file-upload"></i>
+                </div>
+                <div id="step-connector-1" class="step-connector completed"></div>
+                <div id="step-indicator-2"
+                    class="step-indicator active flex items-center justify-center w-10 h-10 border-2 rounded-full font-medium text-sm shadow-sm">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <div id="step-connector-2" class="step-connector completed"></div>
+                <div id="step-indicator-3"
+                    class="step-indicator active flex items-center justify-center w-10 h-10 border-2 rounded-full font-medium text-sm shadow-sm">
+                    <i class="fas fa-clipboard-check"></i>
+                </div>
+            </div>
+            <button id="cancel-btn"
+                class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition duration-200">
+                <i class="fas fa-times mr-2"></i> Cancel
+            </button>
+        </div>
+        <!-- <div class="flex justify-between mt-2 text-xs text-gray-600">
+            <span class="ml-1">Upload</span>
+            <span class="ml-1">Process</span>
+            <span class="ml-2">Results</span>
+        </div> -->
+    </div>
+
+    <!-- Form Container -->
+    <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+        <form id="add-scan-form" action="/scans/process" method="POST" enctype="multipart/form-data">
+            <h2 class="text-xl font-medium text-gray-800 mb-6">Scan Information</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="patientSelect">
+                        Select Patient*
+                    </label>
+                    <select
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="patientSelect" name="patientId" required>
+                        <option value="" disabled selected>Select a patient</option>
+                        <% if(patients && patients.length> 0) { %>
+                            <% patients.forEach(function(patient) { %>
+                                <option value="<%= patient.patient_id %>">
+                                    <%= patient.patient_unique_id %> - <%= patient.full_name %>
+                                </option>
+                                <% }); %>
+                                    <% } %>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="scanDate">
+                        Scan Date*
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="scanDate" name="scanDate" type="date" required>
+                </div>
+            </div>
+
+            <!-- Patient Info Display -->
+            <div id="patient-info-display"
+                class="<% if(!selectedPatient) { %>hidden<% } %> mb-6 p-4 bg-blue-50 rounded-lg border border-blue-100">
+                <h3 class="text-sm font-medium text-blue-800 mb-2">Patient Information</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <p class="text-sm text-blue-800"><span class="font-medium">Name:</span>
+                        <span id="display-name">
+                            <%= selectedPatient ? selectedPatient.full_name : '-' %>
+                        </span>
+                    </p>
+                    <p class="text-sm text-blue-800"><span class="font-medium">Date of Birth:</span>
+                        <span id="display-dob">
+                            <%= selectedPatient ? new Date(selectedPatient.date_of_birth).toLocaleDateString() : '-' %>
+                        </span>
+                    </p>
+                    <p class="text-sm text-blue-800"><span class="font-medium">Gender:</span>
+                        <span id="display-gender">
+                            <%= selectedPatient ? selectedPatient.gender : '-' %>
+                        </span>
+                    </p>
+                    <p class="text-sm text-blue-800"><span class="font-medium">Contact:</span>
+                        <span id="display-contact">
+                            <%= selectedPatient ? selectedPatient.contact_number : '-' %>
+                        </span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-gray-700 text-sm font-bold mb-2">
+                    Upload MRI Scan File*
+                </label>
+                <div id="drop-zone"
+                    class="border-2 border-dashed border-gray-300 rounded-md p-6 flex flex-col items-center justify-center">
+                    <i class="fas fa-brain text-4xl text-gray-400 mb-4"></i>
+                    <p class="text-sm text-gray-500 mb-4 text-center">Drag and drop your MRI scan files
+                        here
+                        or click to browse</p>
+                    <input type="file" id="scanUpload" name="scanFile" class="hidden" accept="image/*,.dcm,.nii,.nii.gz"
+                        required>
+                    <button type="button" id="scanUploadButton"
+                        class="py-2 px-4 border border-blue-500 rounded-md text-blue-600 hover:bg-blue-50">
+                        Select files
+                    </button>
+                    <p class="text-xs text-gray-500 mt-2">Supported formats: DICOM, NIfTI, JPG, PNG</p>
+                </div>
+
+                <!-- File info preview -->
+                <div id="filePreview" class="hidden mt-4">
+                    <div class="flex items-center p-2 bg-blue-50 rounded">
+                        <i class="fas fa-file-medical mr-2 text-blue-500"></i>
+                        <span id="fileName" class="text-sm">filename.dcm</span>
+                        <button type="button" id="removeFile" class="ml-auto text-red-500 hover:text-red-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Image preview container -->
+                <div id="imagePreviewContainer" class="hidden mt-4">
+                    <p class="text-sm font-medium text-gray-700 mb-2">Scan Preview:</p>
+                    <div class="bg-gray-100 rounded-lg p-4 flex justify-center">
+                        <div class="relative" style="max-width: 300px; max-height: 300px;">
+                            <img id="imagePreview" src="#" alt="Brain MRI Scan Preview"
+                                class="max-w-full max-h-full object-contain rounded-lg">
+                            <button type="button" id="enlargeImageBtn"
+                                class="absolute bottom-2 right-2 bg-gray-800 bg-opacity-70 text-white rounded-full p-2 hover:bg-opacity-90">
+                                <i class="fas fa-expand-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Modal for enlarged image -->
+    <div id="imageModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
+        <div class="relative bg-white rounded-lg p-1 max-w-4xl max-h-4xl">
+            <img id="enlargedImage" src="#" alt="Enlarged Brain MRI Scan"
+                class="max-w-full max-h-[85vh] object-contain">
+            <button id="closeModalBtn"
+                class="absolute top-2 right-2 text-gray-700 hover:text-gray-900 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-md">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="flex justify-end">
+        <button id="process-btn" type="button" class="px-4 py-2 gradient-bg text-white rounded-md hover:opacity-90">
+            Process Scan <i class="fas fa-arrow-right ml-2"></i>
+        </button>
+    </div>
+
+
+<!-- Loading Overlay (Hidden by default) -->
+<div id="loading-overlay" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white p-8 rounded-lg shadow-lg text-center">
+        <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500 mb-4 mx-auto"></div>
+        <p class="text-gray-600 text-lg font-medium">Processing MRI scan...</p>
+        <p class="text-gray-500 text-sm mt-2">This may take a few moments.</p>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Elements
+        const cancelBtn = document.getElementById('cancel-btn');
+        const form = document.getElementById('add-scan-form');
+        const processBtn = document.getElementById('process-btn');
+        const patientSelect = document.getElementById('patientSelect');
+        const patientInfoDisplay = document.getElementById('patient-info-display');
+        const loadingOverlay = document.getElementById('loading-overlay');
+
+        // File upload elements
+        const scanUploadButton = document.getElementById('scanUploadButton');
+        const scanUploadInput = document.getElementById('scanUpload');
+        const filePreview = document.getElementById('filePreview');
+        const fileName = document.getElementById('fileName');
+        const removeFileBtn = document.getElementById('removeFile');
+        const dropZone = document.getElementById('drop-zone');
+
+        // Image preview elements
+        const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+        const imagePreview = document.getElementById('imagePreview');
+        const enlargeImageBtn = document.getElementById('enlargeImageBtn');
+        const imageModal = document.getElementById('imageModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const enlargedImage = document.getElementById('enlargedImage');
+
+        // Handle mobile menu toggle
+        const menuButton = document.querySelector('button.md\\:hidden');
+        if (menuButton) {
+            menuButton.addEventListener('click', function () {
+                const sidebar = document.querySelector('.md\\:flex.md\\:flex-shrink-0');
+                if (sidebar) {
+                    sidebar.classList.toggle('hidden');
+                }
+            });
+        }
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', function () {
+                if (confirm('Are you sure you want to cancel? Any Uploaded MRI Scan will be lost.')) {
+                    window.location.href = '/dashboard'; // Redirect to dashboard
+                }
+            });
+        }
+        // Patient selection handling
+        patientSelect.addEventListener('change', function () {
+            const patientId = this.value;
+
+            if (!patientId) {
+                patientInfoDisplay.classList.add('hidden');
+                return;
+            }
+
+            // Fetch patient details
+            fetch(`/patients/api/${patientId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.data) {
+                        const patient = data.data;
+                        document.getElementById('display-name').textContent = patient.full_name;
+                        document.getElementById('display-dob').textContent = new Date(patient.date_of_birth).toLocaleDateString();
+                        document.getElementById('display-gender').textContent = patient.gender;
+                        document.getElementById('display-contact').textContent = patient.contact_number || 'N/A';
+                        patientInfoDisplay.classList.remove('hidden');
+                    } else {
+                        patientInfoDisplay.classList.add('hidden');
+                        alert('Error retrieving patient information');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    patientInfoDisplay.classList.add('hidden');
+                    alert('Error retrieving patient information');
+                });
+        });
+
+        // File upload handling
+        scanUploadButton.addEventListener('click', function () {
+            scanUploadInput.click();
+        });
+
+        scanUploadInput.addEventListener('change', function () {
+            if (this.files && this.files[0]) {
+                // Update file name in the preview
+                fileName.textContent = this.files[0].name;
+                filePreview.classList.remove('hidden');
+
+                // Preview the image if it's an image file
+                const file = this.files[0];
+                if (file.type.match('image.*')) {
+                    const reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        // Set the image source for both the preview and the modal
+                        imagePreview.src = e.target.result;
+                        enlargedImage.src = e.target.result;
+
+                        // Show the image preview container
+                        imagePreviewContainer.classList.remove('hidden');
+                    }
+
+                    reader.readAsDataURL(file);
+                } else {
+                    // If not an image file (e.g., DICOM), show a message
+                    imagePreviewContainer.classList.add('hidden');
+                    alert('Preview is only available for image files. For DICOM and other formats, preview will be shown in the results page.');
+                }
+            }
+        });
+
+        removeFileBtn.addEventListener('click', function () {
+            scanUploadInput.value = '';
+            filePreview.classList.add('hidden');
+            imagePreviewContainer.classList.add('hidden');
+        });
+
+        // Drag and drop functionality
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, function () {
+                dropZone.classList.add('border-blue-500', 'bg-blue-50');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, function () {
+                dropZone.classList.remove('border-blue-500', 'bg-blue-50');
+            }, false);
+        });
+
+        dropZone.addEventListener('drop', function (e) {
+            if (e.dataTransfer.files.length) {
+                scanUploadInput.files = e.dataTransfer.files;
+                const file = e.dataTransfer.files[0];
+
+                // Update file name in the preview
+                fileName.textContent = file.name;
+                filePreview.classList.remove('hidden');
+
+                // Preview the image if it's an image file
+                if (file.type.match('image.*')) {
+                    const reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        // Set the image source for both the preview and the modal
+                        imagePreview.src = e.target.result;
+                        enlargedImage.src = e.target.result;
+
+                        // Show the image preview container
+                        imagePreviewContainer.classList.remove('hidden');
+                    }
+
+                    reader.readAsDataURL(file);
+                } else {
+                    // If not an image file (e.g., DICOM), show a message
+                    imagePreviewContainer.classList.add('hidden');
+                    alert('Preview is only available for image files. For DICOM and other formats, preview will be shown in the results page.');
+                }
+            }
+        }, false);
+
+        // Handle image enlarge modal
+        enlargeImageBtn.addEventListener('click', function () {
+            imageModal.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden'); // Prevent scrolling while modal is open
+        });
+
+        closeModalBtn.addEventListener('click', function () {
+            imageModal.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+        });
+
+        // Also close modal when clicking outside the image
+        imageModal.addEventListener('click', function (e) {
+            if (e.target === imageModal) {
+                imageModal.classList.add('hidden');
+                document.body.classList.remove('overflow-hidden');
+            }
+        });
+
+        // Handle process scan button
+        processBtn.addEventListener('click', function () {
+            // Validate form fields
+            const patientId = patientSelect.value;
+            const scanDate = document.getElementById('scanDate').value;
+            const scanFile = scanUploadInput.files[0];
+
+            if (!patientId || !scanDate || !scanFile) {
+                alert('Please fill in all required fields and upload a scan image');
+                return;
+            }
+
+            // Show loading overlay
+            loadingOverlay.classList.remove('hidden');
+
+            // Submit the form
+            form.submit();
+        });
+
+        // Set today's date as default for scan date
+        window.addEventListener('load', function () {
+            const scanDate = document.getElementById('scanDate');
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            scanDate.value = `${year}-${month}-${day}`;
+        });
+    });
+</script>
+
+<style>
+    /* Status Indicators */
+    .step-indicator.completed {
+                border-color: #3b82f6;
+                background-color: #3b82f6;
+                color: white;
+            }
+
+            .step-indicator.active {
+                border-color: #3b82f6;
+                color: #3b82f6;
+            }
+
+            /* Step Connectors */
+            .step-connector {
+                height: 0.125rem;
+                width: 4rem;
+                background-color: #d1d5db;
+            }
+
+            .step-connector.completed {
+                background-color: #3b82f6;
+            }
+
+</style>

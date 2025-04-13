@@ -1,0 +1,1410 @@
+<!-- Main content area -->
+
+<!-- Progress Steps with improved visuals -->
+<div class="mb-8">
+    <div class="flex items-center justify-between">
+        <div class="flex items-center">
+            <div id="step-indicator-1"
+                class="step-indicator completed flex items-center justify-center w-10 h-10 border-2 rounded-full font-medium text-sm shadow-sm">
+                <i class="fas fa-file-upload"></i>
+            </div>
+            <div id="step-connector-1" class="step-connector completed"></div>
+            <div id="step-indicator-2"
+                class="step-indicator completed flex items-center justify-center w-10 h-10 border-2 rounded-full font-medium text-sm shadow-sm">
+                <i class="fas fa-cogs"></i>
+            </div>
+            <div id="step-connector-2" class="step-connector completed"></div>
+            <div id="step-indicator-3"
+                class="step-indicator active flex items-center justify-center w-10 h-10 border-2 rounded-full font-medium text-sm shadow-sm">
+                <i class="fas fa-clipboard-check"></i>
+            </div>
+        </div>
+        <button id="cancel-btn"
+            class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition duration-200">
+            <i class="fas fa-times mr-2"></i> Cancel
+        </button>
+    </div>
+    <!-- <div class="flex justify-between mt-2 text-xs text-gray-600">
+        <span class="ml-1">Upload</span>
+        <span class="ml-1">Process</span>
+        <span class="ml-2">Results</span>
+    </div> -->
+</div>
+
+<!-- Success Flash Message -->
+
+<!-- Patient Info Banner with improved layout -->
+<div class="bg-white border rounded-lg shadow-sm overflow-hidden mb-6 transition duration-300 hover:shadow-md">
+    <div class="p-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
+        <h3 class="font-medium text-gray-800">
+            <i class="fas fa-user-alt mr-2 text-blue-500"></i>Patient Information
+        </h3>
+        <span class="text-xs text-gray-500">Case #<%= scanData.patientId.substring(0, 8).toUpperCase() %></span>
+    </div>
+    <div class="p-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="flex items-start">
+                <div class="text-blue-500 mr-3 mt-1">
+                    <i class="fas fa-id-card"></i>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Patient Name</p>
+                    <p class="font-medium">
+                        <%= patient.full_name %>
+                    </p>
+                </div>
+            </div>
+            <div class="flex items-start">
+                <div class="text-blue-500 mr-3 mt-1">
+                    <i class="fas fa-phone"></i>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Contact Number</p>
+                    <p class="font-medium">
+                        <%= patient.contact_number %>
+                    </p>
+                </div>
+            </div>
+            <div class="flex items-start">
+                <div class="text-blue-500 mr-3 mt-1">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Email</p>
+                    <p class="font-medium">
+                        <%= patient.email %>
+                    </p>
+                </div>
+            </div>
+            <div class="flex items-start">
+                <div class="text-blue-500 mr-3 mt-1">
+                    <i class="fas fa-venus-mars"></i>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Gender</p>
+                    <p class="font-medium">
+                        <%= patient.gender %>
+                    </p>
+                </div>
+            </div>
+            <div class="flex items-start">
+                <div class="text-blue-500 mr-3 mt-1">
+                    <i class="fas fa-x-ray"></i>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Scan Type</p>
+                    <p class="font-medium">
+                        <%= scanData.scanType %> - <%= scanData.description %>
+                    </p>
+                </div>
+            </div>
+            <div class="flex items-start">
+                <div class="text-blue-500 mr-3 mt-1">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Scan Date</p>
+                    <p class="font-medium">
+                        <%= new Date(scanData.uploadDate).toLocaleDateString() %> %>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Summary Card with improved visualization -->
+<div class="bg-white border rounded-lg shadow-sm overflow-hidden mb-6 transition duration-300 hover:shadow-md">
+    <div class="p-4 border-b border-gray-200 bg-gray-50">
+        <h3 class="font-medium text-gray-800">
+            <i class="fas fa-chart-pie mr-2 text-blue-500"></i>Analysis Summary
+        </h3>
+    </div>
+    <div class="p-5">
+        <div class="flex flex-col lg:flex-row items-center mb-4">
+            <div class="w-full lg:w-1/3 flex justify-center mb-6 lg:mb-0">
+                <div class="relative w-48 h-48 flex items-center justify-center">
+                    <svg class="w-full h-full" viewBox="0 0 36 36">
+                        <path id="summary-chart-background" class="stroke-current text-gray-200" stroke-width="3.5"
+                            fill="none" stroke-linecap="round"
+                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <path id="summary-chart-foreground" class="stroke-current" stroke-width="3.5" fill="none"
+                            stroke-linecap="round" stroke-dasharray="0, 100" />
+                        <text x="18" y="18.5" class="summary-percentage fill-current font-bold text-center"
+                            text-anchor="middle" font-size="8">0%</text>
+                        <text x="18" y="24" class="summary-label fill-current text-center" text-anchor="middle"
+                            font-size="2.5">confidence</text>
+                    </svg>
+                </div>
+            </div>
+            <div class="w-full lg:w-2/3">
+                <div id="summary-result" class="p-5 rounded-lg">
+                    <div class="flex items-center">
+                        <h4 id="summary-title" class="text-xl font-medium mb-3"></h4>
+                        <span id="confidence-badge" class="ml-3 px-3 py-1 text-xs font-medium rounded-full"></span>
+                    </div>
+                    <p id="summary-description" class="text-sm mb-4"></p>
+                    <div class="flex flex-wrap mt-4 gap-3">
+                        <div class="bg-gray-100 px-3 py-2 rounded-lg flex items-center text-sm">
+                            <i class="fas fa-brain mr-2 text-indigo-500"></i>
+                            <span>Scan Type: <strong>
+                                    <%= scanData.scanType %>
+                                </strong></span>
+                        </div>
+                        <div class="bg-gray-100 px-3 py-2 rounded-lg flex items-center text-sm">
+                            <i class="fas fa-clock mr-2 text-yellow-500"></i>
+                            <span>Processing Time: <strong>2.4 seconds</strong></span>
+                        </div>
+                        <div class="bg-gray-100 px-3 py-2 rounded-lg flex items-center text-sm">
+                            <i class="fas fa-layer-group mr-2 text-purple-500"></i>
+                            <span>Scan Depth: <strong>Multiple Planes</strong></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="result-container">
+    <!-- Image Comparison Section with improved layout and interaction -->
+    <div class="bg-white border rounded-lg shadow-sm overflow-hidden mb-6 transition duration-300 hover:shadow-md">
+        <div class="p-4 border-b border-gray-200 bg-gray-50">
+            <h3 class="font-medium text-gray-800">
+                <i class="fas fa-images mr-2 text-blue-500"></i>Image Analysis
+            </h3>
+        </div>
+        <div class="p-5">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Original Image with hover effects -->
+                <div class="transition duration-300 transform hover:scale-[1.02]">
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                        <h4 class="text-center text-gray-700 mb-3 font-medium">Original Scan</h4>
+                        <div class="flex justify-center">
+                            <div class="relative" style="max-width: 350px;">
+                                <img id="original-image" src="<%= scanData.imageFilePath %>"
+                                    alt="Original Brain MRI Scan" class="w-full h-auto rounded-lg shadow-md">
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-tr from-black/20 to-transparent rounded-lg opacity-0 hover:opacity-100 transition-opacity duration-300">
+                                </div>
+                                <button
+                                    class="enlarge-btn absolute bottom-3 right-3 bg-gray-800 bg-opacity-80 text-white rounded-full p-2 hover:bg-opacity-100 transition-all duration-300 shadow-lg"
+                                    data-img="<%= scanData.imageFilePath %>">
+                                    <i class="fas fa-expand-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-500 text-center mt-3">Original patient brain MRI scan</p>
+                    </div>
+                </div>
+
+                <!-- Segmented Image with hover effects -->
+                <div class="transition duration-300 transform hover:scale-[1.02]">
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                        <h4 class="text-center text-gray-700 mb-3 font-medium">Segmentation Result</h4>
+                        <div class="flex justify-center">
+                            <div class="relative" style="max-width: 350px;">
+                                <img id="segmentation-image" src="<%= scanData.segmentedImagePath %>"
+                                    alt="Segmented Brain MRI Scan" class="w-full h-auto rounded-lg shadow-md">
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-tr from-black/20 to-transparent rounded-lg opacity-0 hover:opacity-100 transition-opacity duration-300">
+                                </div>
+                                <button
+                                    class="enlarge-btn absolute bottom-3 right-3 bg-gray-800 bg-opacity-80 text-white rounded-full p-2 hover:bg-opacity-100 transition-all duration-300 shadow-lg"
+                                    data-img="<%= scanData.segmentedImagePath %>">
+                                    <i class="fas fa-expand-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-500 text-center mt-3">Areas highlighted in color indicate
+                            potential tumor regions</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image comparison slider - new feature -->
+            <div class="mt-8 bg-gray-50 p-4 rounded-lg border border-gray-100">
+                <h4 class="text-center text-gray-700 mb-3 font-medium">Interactive Comparison View</h4>
+                <div class="flex justify-center">
+                    <div id="comparison-container"
+                        class="relative w-full max-w-2xl h-64 md:h-96 rounded-lg overflow-hidden shadow-md">
+                        <div class="image-compare-wrapper w-full h-full">
+                            <img id="compare-before" src="<%= scanData.imageFilePath %>" alt="Original Scan"
+                                class="absolute top-0 left-0 w-full h-full object-contain">
+                            <img id="compare-after" src="<%= scanData.segmentedImagePath %>" alt="Segmented Scan"
+                                class="absolute top-0 left-0 w-full h-full object-contain opacity-0">
+                        </div>
+                        <input type="range" min="0" max="100" value="50"
+                            class="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-3/4 slider-control"
+                            id="comparison-slider">
+                        <div class="absolute top-2 left-2 bg-black/70 text-white text-xs py-1 px-2 rounded">
+                            <span id="view-label">Drag slider to compare</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-500 text-center mt-3">Slide to compare original and segmented images
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Classification Result with improved visualization -->
+    <div id="classification-result"
+        class="bg-white border rounded-lg shadow-sm overflow-hidden mb-6 transition duration-300 hover:shadow-md">
+        <div class="p-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
+            <div>
+                <h3 class="font-medium text-gray-800">
+                    <i class="fas fa-clipboard-list mr-2 text-blue-500"></i>Classification Results
+                </h3>
+            </div>
+            <span id="result-badge" class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full">
+                <!-- Will be filled by JS -->
+            </span>
+        </div>
+        <div class="p-5">
+            <!-- Tumor Type Information with improved design -->
+
+
+            <!-- Probability Analysis with improved styling -->
+            <div>
+                <h4 class="font-medium text-gray-700 mb-3 flex items-center">
+                    <i class="fas fa-chart-bar mr-2 text-blue-500"></i>Probability Analysis:
+                </h4>
+
+                <!-- Glioma Probability -->
+                <div class="mb-5">
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-indigo-500 rounded-full mr-2"></div>
+                            <span class="text-gray-700 font-medium">Glioma</span>
+                        </div>
+                        <span id="glioma-probability" class="font-medium"><!-- Will be filled by JS --></span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                        <div id="glioma-bar"
+                            class="bg-indigo-500 h-2.5 rounded-full transition-all duration-1000 ease-out"
+                            style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Meningioma Probability -->
+                <div class="mb-5">
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-yellow-500 rounded-full mr-2"></div>
+                            <span class="text-gray-700 font-medium">Meningioma</span>
+                        </div>
+                        <span id="meningioma-probability" class="font-medium"><!-- Will be filled by JS --></span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                        <div id="meningioma-bar"
+                            class="bg-yellow-500 h-2.5 rounded-full transition-all duration-1000 ease-out"
+                            style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Pituitary Probability -->
+                <div class="mb-5">
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-purple-500 rounded-full mr-2"></div>
+                            <span class="text-gray-700 font-medium">Pituitary</span>
+                        </div>
+                        <span id="pituitary-probability" class="font-medium"><!-- Will be filled by JS --></span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                        <div id="pituitary-bar"
+                            class="bg-purple-500 h-2.5 rounded-full transition-all duration-1000 ease-out"
+                            style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- No Tumor Probability -->
+                <div class="mb-5">
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                            <span class="text-gray-700 font-medium">No Tumor</span>
+                        </div>
+                        <span id="no-tumor-probability" class="font-medium"><!-- Will be filled by JS --></span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                        <div id="no-tumor-bar"
+                            class="bg-green-500 h-2.5 rounded-full transition-all duration-1000 ease-out"
+                            style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Confidence Score - NEW -->
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Visualization Section with single chart -->
+    <div class="bg-white border rounded-lg shadow-sm overflow-hidden mb-6 transition duration-300 hover:shadow-md">
+        <div class="p-4 border-b border-gray-200 bg-gray-50">
+            <h3 class="font-medium text-gray-800">
+                <i class="fas fa-chart-pie mr-2 text-blue-500"></i>Probability Visualization
+            </h3>
+        </div>
+        <div class="p-5">
+            <div class="flex justify-center">
+                <!-- Donut Chart with improved design -->
+                <div
+                    class="bg-gray-50 p-4 rounded-lg border border-gray-200 transition duration-300 transform hover:shadow-md hover:scale-[1.01] max-w-lg w-full">
+                    <h4 class="text-center text-gray-700 mb-3 font-medium">Probability Distribution</h4>
+                    <div class="flex justify-center">
+                        <div class="w-full" style="max-width: 300px;">
+                            <canvas id="probabilityDonutChart" width="300" height="300"></canvas>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-500 text-center mt-3">Relative probability distribution across tumor
+                        types</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Doctor's Notes -->
+    <div class="bg-white border rounded-lg shadow-sm overflow-hidden mb-6">
+        <div class="p-4 border-b border-gray-200">
+            <h3 class="font-medium text-gray-800">Doctor's Notes</h3>
+        </div>
+        <div class="p-4">
+            <textarea id="doctors-notes"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-32"
+                placeholder="Add your clinical notes here..."></textarea>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for enlarged image -->
+<div id="imageModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90">
+    <div class="relative bg-white rounded-lg p-1 max-w-5xl max-h-5xl">
+        <img id="enlargedImage" src="" alt="Enlarged Brain MRI Scan" class="max-w-full max-h-[85vh] object-contain">
+        <button id="closeModalBtn"
+            class="absolute top-2 right-2 text-gray-700 hover:text-gray-900 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-md">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="absolute bottom-2 left-2 bg-white bg-opacity-75 px-3 py-1 rounded text-sm text-gray-700"
+            id="image-caption">
+            Original Scan
+        </div>
+        <div class="absolute bottom-2 right-12 flex space-x-2">
+            <button id="zoomInBtn" class="bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-md">
+                <i class="fas fa-search-plus"></i>
+            </button>
+            <button id="zoomOutBtn" class="bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-md">
+                <i class="fas fa-search-minus"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- AI Recommendation Modal -->
+<div id="aiRecModal"
+    class="hidden fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[80vh] overflow-hidden">
+        <div class="p-4 border-b border-gray-200 flex justify-between items-center bg-blue-50">
+            <h3 class="font-medium text-gray-800 flex items-center">
+                <i class="fas fa-robot mr-2 text-blue-500"></i> AI Assistant Recommendations
+            </h3>
+            <button id="close-ai-rec" class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="p-4 overflow-y-auto max-h-[60vh]" id="ai-recommendation-content">
+            <!-- Will be filled by JS -->
+        </div>
+        <div class="p-4 border-t border-gray-200 bg-gray-50 flex justify-end">
+            <button id="apply-ai-rec"
+                class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-200">
+                Apply Recommendations
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Navigation Buttons -->
+<div class="flex justify-between mb-6">
+    <div class="flex space-x-3">
+        <button id="print-btn"
+            class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition duration-200 flex items-center">
+            <i class="fas fa-print mr-2"></i> Print Report
+        </button>
+        <button id="export-btn"
+            class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition duration-200 flex items-center">
+            <i class="fas fa-file-pdf mr-2"></i> Export PDF
+        </button>
+        <button id="ai-assist-btn"
+            class="px-4 py-2 border border-blue-300 bg-blue-50 rounded-md text-blue-700 hover:bg-blue-100 transition duration-200 flex items-center">
+            <i class="fas fa-robot mr-2"></i> AI Assist
+        </button>
+    </div>
+    <div class="flex space-x-3">
+        <button id="back-btn"
+            class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition duration-200">
+            <i class="fas fa-arrow-left mr-2"></i> Back
+        </button>
+        <form action="/scans/results/save-notes" method="POST">
+            <input type="hidden" value="<%= scanData.scan_id %>" name="scanId" id="scan-id-input">
+            <button id="save-btn"
+                class="px-5 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-md hover:from-blue-600 hover:to-blue-700 transition duration-200 shadow-sm flex items-center">
+                Save Results <i class="fas fa-check ml-2"></i>
+            </button>
+        </form>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+<!-- Add this script at the bottom of your EJS template, just before the closing body tag -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get scan data from server
+        const scanData = {
+            patientId: '<%= scanData.patientId %>',
+            scanType: '<%= scanData.scanType %>',
+            description: '<%= scanData.description %>',
+            uploadDate: '<%= scanData.uploadDate %>',
+            imageFilePath: '<%= scanData.imageFilePath %>',
+            segmentedImagePath: '<%= scanData.segmentedImagePath %>',
+            cancerDetected: ' <%= scanData.cancerDetected %>', // This assumes cancerDetected is a boolean in your data
+            cancerType: '<%= scanData.cancerType %>',
+            gliomaProbability: parseFloat('<%= scanData.gliomaProbability %>'),
+            meningiomaProbability: parseFloat('<%= scanData.meningiomaProbability %>'),
+            pituitaryProbability: parseFloat('<%= scanData.pituitaryProbability %>'),
+            noTumorProbability: parseFloat('<%= scanData.noTumorProbability %>')
+        };
+
+        // Elements
+        const saveBtn = document.getElementById('save-btn');
+        const cancelBtn = document.getElementById('cancel-btn');
+        const printBtn = document.getElementById('print-btn');
+        const exportBtn = document.getElementById('export-btn');
+        const backBtn = document.getElementById('back-btn');
+        const aiAssistBtn = document.getElementById('ai-assist-btn');
+
+        // Image modal elements
+        const imageModal = document.getElementById('imageModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const enlargedImage = document.getElementById('enlargedImage');
+        const imageCaption = document.getElementById('image-caption');
+        const enlargeBtns = document.querySelectorAll('.enlarge-btn');
+        const zoomInBtn = document.getElementById('zoomInBtn');
+        const zoomOutBtn = document.getElementById('zoomOutBtn');
+
+        // Note elements
+        const doctorsNotes = document.getElementById('doctors-notes');
+        const noteWordcount = document.getElementById('note-wordcount');
+        const clearNotesBtn = document.getElementById('clear-notes');
+        const saveNotesBtn = document.getElementById('save-notes');
+        const templateBtn = document.getElementById('template-btn');
+        const dictateBtn = document.getElementById('dictate-btn');
+        const templatesModal = document.getElementById('templates-modal');
+        const closeTemplatesBtn = document.getElementById('close-templates');
+        const templateItems = document.querySelectorAll('.template-item');
+        const quickInsertBtns = document.querySelectorAll('.quick-insert');
+
+        // AI recommendation elements
+        const aiRecModal = document.getElementById('aiRecModal');
+        const closeAiRecBtn = document.getElementById('close-ai-rec');
+        const applyAiRecBtn = document.getElementById('apply-ai-rec');
+        const aiRecommendationContent = document.getElementById('ai-recommendation-content');
+
+        // Image comparison elements
+        const comparisonSlider = document.getElementById('comparison-slider');
+        const compareBeforeImg = document.getElementById('compare-before');
+        const compareAfterImg = document.getElementById('compare-after');
+        const viewLabel = document.getElementById('view-label');
+
+        // Initialize all components
+        initializeApplication();
+
+        function initializeApplication() {
+            // Initialize all components with animation sequence
+            setTimeout(() => {
+                initSummary();
+
+                setTimeout(() => {
+                    initClassificationResults();
+
+                    setTimeout(() => {
+                        // Initialize probability bars with animation
+                        animateProbabilityBars();
+
+                        setTimeout(() => {
+                            // Initialize charts
+                            initDonutChart();
+                            // initRadarChart();
+                            // initTemporalChart();
+
+                            // Initialize additional metrics
+                            // initAdvancedMetrics();
+
+                            // Initialize treatment suggestions
+                            // initTreatmentSuggestions();
+
+                            // Initialize image comparison
+                            initImageComparison();
+
+                            // Add animation complete notification
+                            // showNotification('Analysis complete', 'All visualizations have been generated successfully.');
+                        }, 300);
+                    }, 300);
+                }, 300);
+            }, 300);
+
+            // Initialize event listeners
+            initEventListeners();
+        }
+
+        // Initialize event listeners for all interactive elements
+        function initEventListeners() {
+            // Notes functionality
+            if (doctorsNotes) {
+                doctorsNotes.addEventListener('input', updateWordCount);
+                // Initialize word count
+                updateWordCount();
+            }
+
+            if (clearNotesBtn) {
+                clearNotesBtn.addEventListener('click', function () {
+                    if (confirm('Are you sure you want to clear all notes?')) {
+                        doctorsNotes.value = '';
+                        updateWordCount();
+                    }
+                });
+            }
+
+            if (saveNotesBtn) {
+                saveNotesBtn.addEventListener('click', function () {
+                    showNotification('Notes saved', 'Your notes have been saved as a draft.');
+                });
+            }
+
+            // Template modal
+            if (templateBtn) {
+                templateBtn.addEventListener('click', function () {
+                    templatesModal.classList.remove('hidden');
+                });
+            }
+
+            if (closeTemplatesBtn) {
+                closeTemplatesBtn.addEventListener('click', function () {
+                    templatesModal.classList.add('hidden');
+                });
+            }
+
+            // Template items
+            templateItems.forEach(item => {
+                item.addEventListener('click', function () {
+                    const templateText = this.querySelector('.text-sm').textContent;
+                    insertTextAtCursor(doctorsNotes, templateText);
+                    templatesModal.classList.add('hidden');
+                    updateWordCount();
+                });
+            });
+
+            // Quick insert buttons
+            quickInsertBtns.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const insertText = this.getAttribute('data-text');
+                    insertTextAtCursor(doctorsNotes, insertText);
+                    updateWordCount();
+                });
+            });
+
+            // Dictation button
+            // if (dictateBtn) {
+            //     dictateBtn.addEventListener('click', function() {
+            //         showNotification('Dictation', 'Voice dictation is not available in this demo.');
+            //     });
+            // }
+
+            // AI Assist button
+            if (aiAssistBtn) {
+                aiAssistBtn.addEventListener('click', function () {
+                    openAiRecommendations();
+                });
+            }
+
+            if (closeAiRecBtn) {
+                closeAiRecBtn.addEventListener('click', function () {
+                    aiRecModal.classList.add('hidden');
+                });
+            }
+
+            if (applyAiRecBtn) {
+                applyAiRecBtn.addEventListener('click', function () {
+                    const recommendationNotes = generateAiRecommendationText();
+                    doctorsNotes.value = recommendationNotes;
+                    updateWordCount();
+                    aiRecModal.classList.add('hidden');
+                    showNotification('AI recommendations applied', 'The AI suggested notes have been applied.');
+                });
+            }
+
+            // Image comparison slider
+            if (comparisonSlider) {
+                comparisonSlider.addEventListener('input', updateComparisonView);
+            }
+
+            // Handle enlarged image modal
+            enlargeBtns.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const imgSrc = this.getAttribute('data-img');
+                    const isOriginal = imgSrc === scanData.imageFilePath;
+
+                    enlargedImage.src = imgSrc;
+                    imageCaption.textContent = isOriginal ? 'Original Scan' : 'Segmented Scan';
+                    imageModal.classList.remove('hidden');
+                    currentZoom = 1;
+                    updateZoom();
+                    document.body.classList.add('overflow-hidden'); // Prevent scrolling while modal is open
+                });
+            });
+
+            // Zoom functionality
+            let currentZoom = 1;
+
+            if (zoomInBtn) {
+                zoomInBtn.addEventListener('click', function () {
+                    currentZoom = Math.min(currentZoom + 0.25, 3);
+                    updateZoom();
+                });
+            }
+
+            if (zoomOutBtn) {
+                zoomOutBtn.addEventListener('click', function () {
+                    currentZoom = Math.max(currentZoom - 0.25, 0.5);
+                    updateZoom();
+                });
+            }
+
+            function updateZoom() {
+                enlargedImage.style.transform = `scale(${currentZoom})`;
+            }
+
+            if (closeModalBtn) {
+                closeModalBtn.addEventListener('click', function () {
+                    imageModal.classList.add('hidden');
+                    document.body.classList.remove('overflow-hidden');
+                });
+            }
+
+            // Also close modal when clicking outside the image
+            if (imageModal) {
+                imageModal.addEventListener('click', function (e) {
+                    if (e.target === imageModal) {
+                        imageModal.classList.add('hidden');
+                        document.body.classList.remove('overflow-hidden');
+                    }
+                });
+            }
+
+            // Button actions
+            if (printBtn) {
+                printBtn.addEventListener('click', function () {
+                    window.print();
+                });
+            }
+
+            if (exportBtn) {
+                exportBtn.addEventListener('click', function () {
+                    showNotification('Export PDF', 'PDF export functionality will be available in the production version.');
+                });
+            }
+
+            if (backBtn) {
+                backBtn.addEventListener('click', function () {
+                    if (confirm('Are you sure you want to go back? Any unsaved changes will be lost.')) {
+                        window.location.href = '/dashboard';
+                    }
+                });
+            }
+
+            // if (saveBtn) {
+            //     saveBtn.addEventListener('click', function () {
+            //         // Get doctor's notes
+            //         const notes = doctorsNotes.value;
+
+            //         // Simulate saving data to server
+            //         setTimeout(() => {
+            //             showNotification('Success', 'Scan results and doctor\'s notes saved successfully!', 'success');
+
+            //             // In a real app, we would save the notes to the server here
+            //             // and redirect after successful save
+            //             setTimeout(() => {
+            //                 window.location.href = '/dashboard';
+            //             }, 1000);
+            //         }, 500);
+            //     });
+            // }
+
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', function () {
+                    if (confirm('Are you sure you want to cancel? Any unsaved notes will be lost.')) {
+                        window.location.href = '/dashboard'; // Redirect to dashboard
+                    }
+                });
+            }
+        }
+
+        // Update word count for notes
+        function updateWordCount() {
+            if (!doctorsNotes || !noteWordcount) return;
+
+            const text = doctorsNotes.value.trim();
+            const wordCount = text ? text.split(/\s+/).length : 0;
+            noteWordcount.textContent = wordCount;
+        }
+
+        // Insert text at cursor position in textarea
+        function insertTextAtCursor(textarea, text) {
+            if (!textarea) return;
+
+            const startPos = textarea.selectionStart;
+            const endPos = textarea.selectionEnd;
+            const scrollTop = textarea.scrollTop;
+
+            textarea.value = textarea.value.substring(0, startPos) +
+                text +
+                textarea.value.substring(endPos, textarea.value.length);
+
+            textarea.focus();
+            textarea.selectionStart = startPos + text.length;
+            textarea.selectionEnd = startPos + text.length;
+            textarea.scrollTop = scrollTop;
+        }
+
+        // Show notification
+        function showNotification(title, message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-50 max-w-xs bg-white rounded-lg shadow-lg border overflow-hidden transition-all duration-300 transform translate-x-full`;
+
+            let borderColor, iconColor, icon;
+            switch (type) {
+                case 'success':
+                    borderColor = 'border-green-500';
+                    iconColor = 'text-green-500';
+                    icon = 'check-circle';
+                    break;
+                case 'error':
+                    borderColor = 'border-red-500';
+                    iconColor = 'text-red-500';
+                    icon = 'exclamation-circle';
+                    break;
+                case 'warning':
+                    borderColor = 'border-yellow-500';
+                    iconColor = 'text-yellow-500';
+                    icon = 'exclamation-triangle';
+                    break;
+                default:
+                    borderColor = 'border-blue-500';
+                    iconColor = 'text-blue-500';
+                    icon = 'info-circle';
+            }
+
+            notification.classList.add(borderColor, 'border-l-4');
+
+            notification.innerHTML = `
+                <div class="p-4 flex">
+                    <div class="flex-shrink-0 mr-3">
+                        <i class="fas fa-${icon} ${iconColor} text-lg"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-medium text-gray-800">${title}</h4>
+                        <p class="text-sm text-gray-600 mt-1">${message}</p>
+                    </div>
+                    <button class="ml-auto -mt-1 text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="bg-gray-100 py-1">
+                    <div class="notification-progress h-1 bg-${type === 'success' ? 'green' : type === 'error' ? 'red' : type === 'warning' ? 'yellow' : 'blue'}-500 w-full" style="transition: width 3s linear; width: 100%;"></div>
+                </div>
+            `;
+
+            // Add to document
+            document.body.appendChild(notification);
+
+            // Animate in
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+            }, 10);
+
+            // Start progress bar animation
+            setTimeout(() => {
+                const progressBar = notification.querySelector('.notification-progress');
+                if (progressBar) {
+                    progressBar.style.width = '0';
+                }
+            }, 100);
+
+            // Add close button functionality
+            const closeBtn = notification.querySelector('button');
+            closeBtn.addEventListener('click', () => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            });
+
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 3100);
+        }
+
+        // Initialize image comparison slider
+        function initImageComparison() {
+            if (comparisonSlider) {
+                updateComparisonView();
+            }
+        }
+
+        // Update image comparison view based on slider position
+        function updateComparisonView() {
+            if (!comparisonSlider || !compareBeforeImg || !compareAfterImg) return;
+
+            const value = comparisonSlider.value;
+            compareBeforeImg.style.opacity = (100 - value) / 100;
+            compareAfterImg.style.opacity = value / 100;
+
+            if (value < 10) {
+                viewLabel.textContent = 'Original scan view';
+            } else if (value > 90) {
+                viewLabel.textContent = 'Segmented scan view';
+            } else {
+                viewLabel.textContent = 'Comparison view';
+            }
+        }
+
+        // Open AI recommendations modal
+        function openAiRecommendations() {
+            // Generate AI recommendations based on scan results
+            const recommendations = generateAiRecommendations();
+
+            // Populate modal content
+            aiRecommendationContent.innerHTML = recommendations;
+
+            // Show modal
+            aiRecModal.classList.remove('hidden');
+        }
+
+        // Generate AI recommendations HTML
+        function generateAiRecommendations() {
+            const tumorType = scanData.cancerDetected ? scanData.cancerType.toLowerCase() : 'no_tumor';
+
+            // Create recommendation HTML based on scan results
+            let html = `
+                <div class="mb-4 p-4 bg-blue-50 rounded-lg">
+                    <h4 class="font-medium text-gray-800 mb-2">AI-Assisted Analysis</h4>
+                    <p class="text-sm text-gray-600">Based on the scan results and clinical guidelines, the following notes are suggested:</p>
+                </div>
+            `;
+
+            html += `<div class="p-4 bg-white border rounded-lg mb-4">`;
+
+            if (tumorType === 'no_tumor' || !scanData.cancerDetected) {
+                html += `
+                    <p class="mb-3"><strong>Finding:</strong> Brain MRI appears normal with no evidence of intracranial masses or lesions. Ventricles are of normal size and configuration. No midline shift or mass effect. No evidence of acute infarction, hemorrhage, or extra-axial fluid collections.</p>
+                    <p class="mb-3"><strong>Impression:</strong> Normal brain MRI study.</p>
+                    <p><strong>Recommendation:</strong> No further imaging follow-up is required based on this study alone. Routine follow-up as clinically indicated.</p>
+                `;
+            } else if (tumorType === 'glioma') {
+                html += `
+                    <p class="mb-3"><strong>Finding:</strong> There is an irregular, infiltrative intra-axial mass in the ${getRandomLocation('glioma')} measuring approximately ${getRandomSize('glioma')}. The lesion demonstrates heterogeneous enhancement and is surrounded by vasogenic edema. There is ${Math.random() > 0.5 ? 'minimal' : 'no significant'} mass effect on adjacent structures.</p>
+                    <p class="mb-3"><strong>Impression:</strong> Findings are consistent with high-grade glioma. DDx includes primary CNS lymphoma, metastasis.</p>
+                    <p><strong>Recommendation:</strong> Neurosurgical consultation for possible biopsy/resection. Consider advanced imaging (perfusion, spectroscopy) for further characterization. Follow-up in 1-2 months post-treatment.</p>
+                `;
+            } else if (tumorType === 'meningioma') {
+                html += `
+                    <p class="mb-3"><strong>Finding:</strong> There is a well-defined, extra-axial, dural-based mass in the ${getRandomLocation('meningioma')} measuring approximately ${getRandomSize('meningioma')}. The lesion demonstrates homogeneous enhancement and a dural tail sign. There is ${Math.random() > 0.7 ? 'minimal' : 'no'} surrounding edema. No significant mass effect on adjacent brain parenchyma.</p>
+                    <p class="mb-3"><strong>Impression:</strong> Findings are consistent with meningioma, likely WHO grade I.</p>
+                    <p><strong>Recommendation:</strong> Neurosurgical consultation for management options. If asymptomatic, surveillance imaging in 6 months may be appropriate. Clinical correlation needed.</p>
+                `;
+            } else if (tumorType === 'pituitary') {
+                html += `
+                    <p class="mb-3"><strong>Finding:</strong> There is a ${getRandomSize('pituitary')} sellar mass with ${Math.random() > 0.5 ? 'suprasellar extension' : 'confined to the sella'}. The mass demonstrates homogeneous enhancement. ${Math.random() > 0.7 ? 'There is mild compression of the optic chiasm.' : 'No compression of the optic chiasm is noted.'} The cavernous sinuses appear intact.</p>
+                    <p class="mb-3"><strong>Impression:</strong> Findings are consistent with pituitary macroadenoma.</p>
+                    <p><strong>Recommendation:</strong> Endocrinological evaluation for hormonal status. Ophthalmological assessment for visual fields. Neurosurgical consultation for management options.</p>
+                `;
+            }
+
+            html += `</div>`;
+
+            // Add additional considerations
+            html += `
+                <div class="mb-4">
+                    <h4 class="font-medium text-gray-800 mb-2">Clinical Considerations</h4>
+                    <ul class="list-disc pl-5 text-sm text-gray-600 space-y-2">
+                        ${getClinicalConsiderations(tumorType)}
+                    </ul>
+                </div>
+            `;
+
+            return html;
+        }
+
+        // Generate text for AI recommendation (applied to notes)
+        function generateAiRecommendationText() {
+            const tumorType = scanData.cancerDetected ? scanData.cancerType.toLowerCase() : 'no_tumor';
+
+            let text = '';
+
+            if (tumorType === 'no_tumor' || !scanData.cancerDetected) {
+                text += `Finding: Brain MRI appears normal with no evidence of intracranial masses or lesions. Ventricles are of normal size and configuration. No midline shift or mass effect. No evidence of acute infarction, hemorrhage, or extra-axial fluid collections.\n\n`;
+                text += `Impression: Normal brain MRI study.\n\n`;
+                text += `Recommendation: No further imaging follow-up is required based on this study alone. Routine follow-up as clinically indicated.`;
+            } else if (tumorType === 'glioma') {
+                text += `Finding: There is an irregular, infiltrative intra-axial mass in the ${getRandomLocation('glioma')} measuring approximately ${getRandomSize('glioma')}. The lesion demonstrates heterogeneous enhancement and is surrounded by vasogenic edema. There is ${Math.random() > 0.5 ? 'minimal' : 'no significant'} mass effect on adjacent structures.\n\n`;
+                text += `Impression: Findings are consistent with high-grade glioma. DDx includes primary CNS lymphoma, metastasis.\n\n`;
+                text += `Recommendation: Neurosurgical consultation for possible biopsy/resection. Consider advanced imaging (perfusion, spectroscopy) for further characterization. Follow-up in 1-2 months post-treatment.`;
+            } else if (tumorType === 'meningioma') {
+                text += `Finding: There is a well-defined, extra-axial, dural-based mass in the ${getRandomLocation('meningioma')} measuring approximately ${getRandomSize('meningioma')}. The lesion demonstrates homogeneous enhancement and a dural tail sign. There is ${Math.random() > 0.7 ? 'minimal' : 'no'} surrounding edema. No significant mass effect on adjacent brain parenchyma.\n\n`;
+                text += `Impression: Findings are consistent with meningioma, likely WHO grade I.\n\n`;
+                text += `Recommendation: Neurosurgical consultation for management options. If asymptomatic, surveillance imaging in 6 months may be appropriate. Clinical correlation needed.`;
+            } else if (tumorType === 'pituitary') {
+                text += `Finding: There is a ${getRandomSize('pituitary')} sellar mass with ${Math.random() > 0.5 ? 'suprasellar extension' : 'confined to the sella'}. The mass demonstrates homogeneous enhancement. ${Math.random() > 0.7 ? 'There is mild compression of the optic chiasm.' : 'No compression of the optic chiasm is noted.'} The cavernous sinuses appear intact.\n\n`;
+                text += `Impression: Findings are consistent with pituitary macroadenoma.\n\n`;
+                text += `Recommendation: Endocrinological evaluation for hormonal status. Ophthalmological assessment for visual fields. Neurosurgical consultation for management options.`;
+            }
+
+            return text;
+        }
+
+
+
+        // Animate probability bars with a smooth transition
+        function animateProbabilityBars() {
+            const gliomaBar = document.getElementById('glioma-bar');
+            const meningiomaBar = document.getElementById('meningioma-bar');
+            const pituitaryBar = document.getElementById('pituitary-bar');
+            const noTumorBar = document.getElementById('no-tumor-bar');
+
+            // Reset bars first
+            if (gliomaBar) gliomaBar.style.width = '0%';
+            if (meningiomaBar) meningiomaBar.style.width = '0%';
+            if (pituitaryBar) pituitaryBar.style.width = '0%';
+            if (noTumorBar) noTumorBar.style.width = '0%';
+
+            // Then animate after a small delay
+            setTimeout(() => {
+                if (gliomaBar) gliomaBar.style.width = `${scanData.gliomaProbability}%`;
+                if (meningiomaBar) meningiomaBar.style.width = `${scanData.meningiomaProbability}%`;
+                if (pituitaryBar) pituitaryBar.style.width = `${scanData.pituitaryProbability}%`;
+                if (noTumorBar) noTumorBar.style.width = `${scanData.noTumorProbability}%`;
+            }, 100);
+        }
+        // Initialize summary
+        function initSummary() {
+            const summaryChart = document.getElementById('summary-chart-foreground');
+            const summaryPercentage = document.querySelector('.summary-percentage');
+            const summaryLabel = document.querySelector('.summary-label');
+            const summaryTitle = document.getElementById('summary-title');
+            const summaryDescription = document.getElementById('summary-description');
+            const summaryResult = document.getElementById('summary-result');
+            const confidenceBadge = document.getElementById('confidence-badge');
+
+            // Determine highest probability and its type
+            const probabilities = {
+                glioma: scanData.gliomaProbability,
+                meningioma: scanData.meningiomaProbability,
+                pituitary: scanData.pituitaryProbability,
+                no_tumor: scanData.noTumorProbability
+            };
+
+            const highestProbType = Object.keys(probabilities).reduce((a, b) =>
+                probabilities[a] > probabilities[b] ? a : b);
+            const highestProb = probabilities[highestProbType];
+
+            // Update chart with animation
+            if (summaryChart) {
+                // Start with 0
+                summaryChart.setAttribute('stroke-dasharray', '0, 100');
+
+                // Set color based on detection
+                if (scanData.cancerDetected && highestProbType !== 'no_tumor') {
+                    summaryChart.classList.add('text-red-500');
+                    summaryResult.classList.add('bg-red-50');
+                    summaryTitle.classList.add('text-red-700');
+
+                    if (confidenceBadge) {
+                        confidenceBadge.classList.add('bg-red-100', 'text-red-800');
+                        confidenceBadge.textContent = 'Positive Finding';
+                    }
+                } else {
+                    summaryChart.classList.add('text-green-500');
+                    summaryResult.classList.add('bg-green-50');
+                    summaryTitle.classList.add('text-green-700');
+
+                    if (confidenceBadge) {
+                        confidenceBadge.classList.add('bg-green-100', 'text-green-800');
+                        confidenceBadge.textContent = 'Negative Finding';
+                    }
+                }
+
+                // Animate the chart
+                setTimeout(() => {
+                    summaryChart.setAttribute('stroke-dasharray', `${highestProb}, 100`);
+                }, 300);
+            }
+
+            // Update text with placeholder first, then animate
+            if (summaryPercentage) {
+                summaryPercentage.textContent = '0%';
+
+                // Animate percentage counter
+                animateCounter(summaryPercentage, 0, highestProb, 1000, '%');
+            }
+
+            if (summaryTitle) {
+                if (scanData.cancerDetected && highestProbType !== 'no_tumor') {
+                    summaryTitle.textContent = `${formatTumorType(highestProbType)} Tumor Detected`;
+                } else {
+                    summaryTitle.textContent = 'No Tumor Detected';
+                }
+            }
+
+            if (summaryDescription) {
+                if (scanData.cancerDetected && highestProbType !== 'no_tumor') {
+                    summaryDescription.textContent = `Analysis indicates the presence of a ${formatTumorType(highestProbType)} with ${highestProb}% confidence. Further clinical evaluation is recommended.`;
+                } else {
+                    summaryDescription.textContent = `Analysis indicates no significant tumor presence with ${highestProb}% confidence. Regular follow-up is recommended as per standard protocol.`;
+                }
+            }
+        }
+
+        // Animation for counter elements
+        function animateCounter(element, start, end, duration, suffix = '') {
+            if (!element) return;
+
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const value = Math.floor(progress * (end - start) + start);
+                element.textContent = value + suffix;
+
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+
+            window.requestAnimationFrame(step);
+        }
+
+        // Format tumor type for display
+        function formatTumorType(type) {
+            if (type === 'no_tumor') return 'No Tumor';
+            return type.charAt(0).toUpperCase() + type.slice(1);
+        }
+
+        // Classification Results Initialization
+        function initClassificationResults() {
+            const classificationResult = document.getElementById('classification-result');
+            const resultBadge = document.getElementById('result-badge');
+            // const tumorTypeElement = document.getElementById('tumor-type');
+            // const tumorDescriptionElement = document.getElementById('tumor-description');
+
+            // Probability elements
+            const gliomaProbability = document.getElementById('glioma-probability');
+            const meningiomaProbability = document.getElementById('meningioma-probability');
+            const pituitaryProbability = document.getElementById('pituitary-probability');
+            const noTumorProbability = document.getElementById('no-tumor-probability');
+
+            // Set probabilities
+            if (gliomaProbability) gliomaProbability.textContent = `${scanData.gliomaProbability}%`;
+            if (meningiomaProbability) meningiomaProbability.textContent = `${scanData.meningiomaProbability}%`;
+            if (pituitaryProbability) pituitaryProbability.textContent = `${scanData.pituitaryProbability}%`;
+            if (noTumorProbability) noTumorProbability.textContent = `${scanData.noTumorProbability}%`;
+
+            // Update detection status
+            if (resultBadge) {
+                if (scanData.cancerDetected) {
+                    resultBadge.className = 'px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800';
+                    resultBadge.textContent = 'Positive Finding';
+                } else {
+                    resultBadge.className = 'px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800';
+                    resultBadge.textContent = 'Negative Finding';
+                }
+            }
+
+        }
+
+        // Initialize Donut Chart
+        function initDonutChart() {
+            const ctx = document.getElementById('probabilityDonutChart');
+            if (!ctx) return;
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Glioma', 'Meningioma', 'Pituitary', 'No Tumor'],
+                    datasets: [{
+                        data: [
+                            scanData.gliomaProbability,
+                            scanData.meningiomaProbability,
+                            scanData.pituitaryProbability,
+                            scanData.noTumorProbability
+                        ],
+                        backgroundColor: [
+                            'rgba(99, 102, 241, 0.8)',  // Indigo for Glioma
+                            'rgba(234, 179, 8, 0.8)',   // Yellow for Meningioma
+                            'rgba(147, 51, 234, 0.8)',  // Purple for Pituitary
+                            'rgba(34, 197, 94, 0.8)'    // Green for No Tumor
+                        ],
+                        borderColor: [
+                            'rgba(99, 102, 241, 1)',
+                            'rgba(234, 179, 8, 1)',
+                            'rgba(147, 51, 234, 1)',
+                            'rgba(34, 197, 94, 1)'
+                        ],
+                        borderWidth: 1,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    cutout: '65%',
+                    animation: {
+                        animateRotate: true,
+                        animateScale: true,
+                        duration: 1000
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Probability Distribution',
+                            padding: {
+                                top: 10,
+                                bottom: 20
+                            },
+                            font: {
+                                size: 14
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    return `${label}: ${value}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+
+    });
+</script>
+
+<!-- Print styles -->
+<style>
+    /* Styles for Scan Results Page */
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+
+        #result-container,
+        #result-container * {
+            visibility: visible;
+        }
+
+        #result-container {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+        }
+
+        .enlarge-btn,
+        #doctors-notes,
+        .quick-insert,
+        #dictate-btn,
+        #template-btn,
+        #clear-notes,
+        #save-notes,
+        #note-wordcount,
+        #visualization3D,
+        #print-btn,
+        #export-btn,
+        #back-btn,
+        #save-btn,
+        #ai-assist-btn,
+        #cancel-btn {
+            display: none !important;
+        }
+
+        canvas {
+            max-width: 100% !important;
+            height: auto !important;
+        }
+
+        /* Improve contrast for print */
+        .bg-gray-50 {
+            background-color: transparent !important;
+        }
+
+        .shadow-sm,
+        .shadow-md,
+        .shadow-lg {
+            box-shadow: none !important;
+        }
+
+        /* Add page breaks */
+        .page-break-before {
+            page-break-before: always;
+        }
+
+        .page-break-after {
+            page-break-after: always;
+        }
+    }
+
+    /* Status Indicators */
+    .step-indicator.completed {
+        border-color: #3b82f6;
+        background-color: #3b82f6;
+        color: white;
+    }
+
+    .step-indicator.active {
+        border-color: #3b82f6;
+        color: #3b82f6;
+    }
+
+    /* Step Connectors */
+    .step-connector {
+        height: 0.125rem;
+        width: 4rem;
+        background-color: #d1d5db;
+    }
+
+    .step-connector.completed {
+        background-color: #3b82f6;
+    }
+
+    /* Gradient Background for Save Button */
+    .gradient-bg {
+        background: linear-gradient(to right, #3b82f6, #2563eb);
+        transition: opacity 0.3s ease;
+    }
+
+    /* Image Enlarge Button Hover Effect */
+    .enlarge-btn {
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .relative:hover .enlarge-btn {
+        opacity: 1;
+    }
+
+    /* Modal Background Transition */
+    #imageModal {
+        transition: background-color 0.3s ease;
+    }
+
+    /* Enlarged image zoom transition */
+    #enlargedImage {
+        transition: transform 0.2s ease-out;
+    }
+
+    /* Chart Hover Effects */
+    .chart-hover-effect {
+        transition: transform 0.3s ease;
+    }
+
+    .chart-hover-effect:hover {
+        transform: scale(1.05);
+    }
+
+    /* Image comparison slider */
+    .slider-control {
+        -webkit-appearance: none;
+        appearance: none;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.7);
+        outline: none;
+        border-radius: 3px;
+        z-index: 2;
+    }
+
+    .slider-control::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        background: #ffffff;
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    }
+
+    .slider-control::-moz-range-thumb {
+        width: 18px;
+        height: 18px;
+        background: #ffffff;
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Animation for probability bars */
+    @keyframes barAnimation {
+        from {
+            width: 0;
+        }
+
+        to {
+            width: 100%;
+        }
+    }
+
+    /* Notification animations */
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+        }
+
+        to {
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes slideOut {
+        from {
+            transform: translateX(0);
+        }
+
+        to {
+            transform: translateX(100%);
+        }
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        .step-connector {
+            width: 2rem;
+        }
+    }
+</style>

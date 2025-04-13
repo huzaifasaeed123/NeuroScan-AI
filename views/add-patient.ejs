@@ -1,0 +1,113 @@
+ <!-- Form Container -->
+                <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+                    <form id="add-patient-form" action="/patients/add" method="POST">
+                        <h2 class="text-xl font-medium text-gray-800 mb-6">Patient Information</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="fullName">
+                                    Full Name*
+                                </label>
+                                <input
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    id="fullName" name="fullName" type="text" placeholder="John Doe" required>
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="patientId">
+                                    Patient ID*
+                                </label>
+                                <input
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    id="patientId" name="patientId" type="text" placeholder="NS-XXXXX" readonly>
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="dateOfBirth">
+                                    Date of Birth*
+                                </label>
+                                <input
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    id="dateOfBirth" name="dateOfBirth" type="date" required max="">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="gender">
+                                    Gender*
+                                </label>
+                                <select
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    id="gender" name="gender" required>
+                                    <option value="" disabled selected>Select gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="contactNumber">
+                                    Contact Number
+                                </label>
+                                <input
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    id="contactNumber" name="contactNumber" type="tel"
+                                    placeholder="+92 3471729745">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
+                                    Email
+                                </label>
+                                <input
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    id="email" name="email" type="email" placeholder="patient@example.com">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="patientHistory">
+                                    Patient History
+                                </label>
+                                <textarea
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    id="patientHistory" name="patientHistory" rows="4" placeholder="Enter patient medical history here"></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-end">
+                            <a href="/patients" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 mr-4">
+                                Cancel
+                            </a>
+                            <button type="submit" class="px-4 py-2 gradient-bg text-white rounded-md hover:opacity-90">
+                                Add Patient
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+    <!-- Simplified JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Generate a unique patient ID when the page loads
+            const patientIdInput = document.getElementById('patientId');
+            const randomNum = Math.floor(10000 + Math.random() * 90000);
+            patientIdInput.value = 'NS-' + randomNum;
+            
+            // Mobile menu toggle
+            const menuButton = document.querySelector('button.md\\:hidden');
+            if (menuButton) {
+                menuButton.addEventListener('click', function() {
+                    const sidebar = document.querySelector('.md\\:flex.md\\:flex-shrink-0');
+                    if (sidebar) {
+                        sidebar.classList.toggle('hidden');
+                    }
+                });
+            }
+
+             // Calculate date 18 years ago
+            const today = new Date();
+            const eighteenYearsAgo = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+            
+            // Format date as YYYY-MM-DD for the input max attribute
+            const maxDate = eighteenYearsAgo.toISOString().split('T')[0];
+            
+            // Set the max attribute
+            document.getElementById('dateOfBirth').setAttribute('max', maxDate);
+        });
+    </script>
+</body>
+
+</html>

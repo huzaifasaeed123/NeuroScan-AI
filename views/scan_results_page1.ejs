@@ -1,0 +1,682 @@
+<!-- Main content area -->
+
+<!-- Progress Steps -->
+<div class="mb-8">
+    <div class="flex items-center justify-between">
+        <div class="flex items-center">
+            <div id="step-indicator-1"
+                class="step-indicator completed flex items-center justify-center w-8 h-8 border-2 rounded-full font-medium text-sm">
+                1
+            </div>
+            <div id="step-connector-1" class="step-connector completed"></div>
+            <div id="step-indicator-2"
+                class="step-indicator completed flex items-center justify-center w-8 h-8 border-2 rounded-full font-medium text-sm">
+                2
+            </div>
+            <div id="step-connector-2" class="step-connector completed"></div>
+            <div id="step-indicator-3"
+                class="step-indicator active flex items-center justify-center w-8 h-8 border-2 rounded-full font-medium text-sm">
+                3
+            </div>
+        </div>
+        <button id="cancel-btn" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+            Cancel
+        </button>
+    </div>
+</div>
+
+<!-- Success Flash Message -->
+
+
+<!-- Patient Info Banner -->
+<div class="bg-white border rounded-lg shadow-sm overflow-hidden mb-6">
+    <div class="p-4 border-b border-gray-200">
+        <h3 class="font-medium text-gray-800">Patient Information</h3>
+    </div>
+    <div class="p-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+                <p class="text-sm text-gray-500">Patient ID</p>
+                <p class="font-medium"><%= scanData.patientId %></p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-500">Scan Type</p>
+                <p class="font-medium"><%= scanData.scanType %> - <%= scanData.description %></p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-500">Scan Date</p>
+                <p class="font-medium"><%= new Date(scanData.uploadDate).toLocaleDateString() %></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Summary Card -->
+<div class="bg-white border rounded-lg shadow-sm overflow-hidden mb-6">
+    <div class="p-4 border-b border-gray-200">
+        <h3 class="font-medium text-gray-800">Analysis Summary</h3>
+    </div>
+    <div class="p-4">
+        <div class="flex flex-col md:flex-row items-center mb-4">
+            <div class="w-full md:w-1/3 flex justify-center mb-4 md:mb-0">
+                <div class="relative w-40 h-40 flex items-center justify-center">
+                    <svg class="w-full h-full" viewBox="0 0 36 36">
+                        <path id="summary-chart-background" class="stroke-current text-gray-200" stroke-width="3" fill="none" stroke-linecap="round" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <path id="summary-chart-foreground" class="stroke-current" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="100, 100" />
+                        <text x="18" y="20.5" class="summary-percentage fill-current text-2xl font-bold text-center" text-anchor="middle"></text>
+                    </svg>
+                </div>
+            </div>
+            <div class="w-full md:w-2/3">
+                <div id="summary-result" class="p-4 rounded-lg">
+                    <h4 id="summary-title" class="text-lg font-medium mb-2"></h4>
+                    <p id="summary-description" class="text-sm"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="result-container">
+    <!-- Image Comparison Section -->
+    <div class="bg-white border rounded-lg shadow-sm overflow-hidden mb-6">
+        <div class="p-4 border-b border-gray-200">
+            <h3 class="font-medium text-gray-800">Image Analysis</h3>
+        </div>
+        <div class="p-4">
+            <div class="flex flex-col md:flex-row gap-4">
+                <!-- Original Image -->
+                <div class="w-full md:w-1/2">
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h4 class="text-center text-gray-700 mb-2">Original Scan</h4>
+                        <div class="flex justify-center">
+                            <div class="relative" style="max-width: 350px;">
+                                <img id="original-image" src="<%= scanData.imageFilePath %>" alt="Original Brain MRI Scan" class="w-full h-auto rounded-lg">
+                                <button class="enlarge-btn absolute bottom-3 right-3 bg-gray-800 bg-opacity-70 text-white rounded-full p-2 hover:bg-opacity-90" data-img="<%= scanData.imageFilePath %>">
+                                    <i class="fas fa-expand-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-500 text-center mt-2">Original patient scan image</p>
+                    </div>
+                </div>
+                
+                <!-- Segmented Image -->
+                <div class="w-full md:w-1/2">
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h4 class="text-center text-gray-700 mb-2">Segmentation Result</h4>
+                        <div class="flex justify-center">
+                            <div class="relative" style="max-width: 350px;">
+                                <img id="segmentation-image" src="<%= scanData.segmentedImagePath %>" alt="Segmented Brain MRI Scan" class="w-full h-auto rounded-lg">
+                                <button class="enlarge-btn absolute bottom-3 right-3 bg-gray-800 bg-opacity-70 text-white rounded-full p-2 hover:bg-opacity-90" data-img="<%= scanData.segmentedImagePath %>">
+                                    <i class="fas fa-expand-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-500 text-center mt-2">Areas highlighted in color indicate potential tumor regions</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Classification Result -->
+    <div id="classification-result" class="bg-white border rounded-lg shadow-sm overflow-hidden mb-6">
+        <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+            <div>
+                <h3 class="font-medium text-gray-800">Classification Results</h3>
+            </div>
+            <span id="result-badge" class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full">
+                <!-- Will be filled by JS -->
+            </span>
+        </div>
+        <div class="p-4">
+            <!-- Tumor Type Information -->
+            <div id="tumor-info" class="mb-6">
+                <h4 class="font-medium text-gray-700 mb-2">Identified Tumor Type:</h4>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <p id="tumor-type" class="text-lg font-medium mb-2"><!-- Will be filled by JS --></p>
+                    <p id="tumor-description" class="text-sm text-gray-600"><!-- Will be filled by JS --></p>
+                </div>
+            </div>
+
+            <!-- Probability Analysis -->
+            <div>
+                <h4 class="font-medium text-gray-700 mb-2">Probability Analysis:</h4>
+                
+                <!-- Glioma Probability -->
+                <div class="mb-4">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-gray-700">Glioma</span>
+                        <span id="glioma-probability" class="font-medium"><!-- Will be filled by JS --></span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div id="glioma-bar" class="bg-indigo-500 h-2.5 rounded-full" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <!-- Meningioma Probability -->
+                <div class="mb-4">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-gray-700">Meningioma</span>
+                        <span id="meningioma-probability" class="font-medium"><!-- Will be filled by JS --></span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div id="meningioma-bar" class="bg-yellow-500 h-2.5 rounded-full" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <!-- Pituitary Probability -->
+                <div class="mb-4">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-gray-700">Pituitary</span>
+                        <span id="pituitary-probability" class="font-medium"><!-- Will be filled by JS --></span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div id="pituitary-bar" class="bg-purple-500 h-2.5 rounded-full" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <!-- No Tumor Probability -->
+                <div class="mb-4">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-gray-700">No Tumor</span>
+                        <span id="no-tumor-probability" class="font-medium"><!-- Will be filled by JS --></span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div id="no-tumor-bar" class="bg-green-500 h-2.5 rounded-full" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Visualization Section -->
+    <div class="bg-white border rounded-lg shadow-sm overflow-hidden mb-6">
+        <div class="p-4 border-b border-gray-200">
+            <h3 class="font-medium text-gray-800">Probability Visualization</h3>
+        </div>
+        <div class="p-4">
+            <div class="flex flex-col md:flex-row gap-6">
+                <!-- Donut Chart -->
+                <div class="w-full md:w-1/2 flex flex-col items-center justify-center">
+                    <canvas id="probabilityDonutChart" width="300" height="300"></canvas>
+                    <p class="text-sm text-gray-500 text-center mt-4">Relative probability distribution across categories</p>
+                </div>
+                
+                <!-- Radar Chart -->
+                <div class="w-full md:w-1/2 flex flex-col items-center justify-center">
+                    <canvas id="radarChart" width="300" height="300"></canvas>
+                    <p class="text-sm text-gray-500 text-center mt-4">Multi-dimensional analysis of tumor characteristics</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Doctor's Notes -->
+    <div class="bg-white border rounded-lg shadow-sm overflow-hidden mb-6">
+        <div class="p-4 border-b border-gray-200">
+            <h3 class="font-medium text-gray-800">Doctor's Notes</h3>
+        </div>
+        <div class="p-4">
+            <textarea id="doctors-notes"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-32"
+                placeholder="Add your clinical notes here..."></textarea>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for enlarged image -->
+<div id="imageModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
+    <div class="relative bg-white rounded-lg p-1 max-w-4xl max-h-4xl">
+        <img id="enlargedImage" src="" alt="Enlarged Brain MRI Scan"
+            class="max-w-full max-h-[85vh] object-contain">
+        <button id="closeModalBtn"
+            class="absolute top-2 right-2 text-gray-700 hover:text-gray-900 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-md">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+</div>
+
+<!-- Navigation Buttons -->
+<div class="flex justify-between">
+    <div>
+        <button id="print-btn" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+            <i class="fas fa-print mr-2"></i> Print Report
+        </button>
+    </div>
+    <div>
+        <button id="save-btn" class="px-4 py-2 gradient-bg text-white rounded-md hover:opacity-90">
+            Save Results <i class="fas fa-check ml-2"></i>
+        </button>
+    </div>
+</div>
+
+<!-- Include Chart.js for visualizations -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get scan data from server
+        const scanData = {
+            patientId: '<%= scanData.patientId %>',
+            scanType: '<%= scanData.scanType %>',
+            description: '<%= scanData.description %>',
+            uploadDate: '<%= scanData.uploadDate %>',
+            imageFilePath: '<%= scanData.imageFilePath %>',
+            segmentedImagePath: '<%= scanData.segmentedImagePath %>',
+            cancerDetected: '<%= scanData.cancerDetected %>',
+            cancerType: '<%= scanData.cancerType %>',
+            gliomaProbability: '<%= scanData.gliomaProbability %>',
+            meningiomaProbability: '<%= scanData.meningiomaProbability %>',
+            pituitaryProbability: '<%= scanData.pituitaryProbability %>',
+            noTumorProbability: '<%= scanData.noTumorProbability %>'
+        };
+        
+        // Elements
+        const saveBtn = document.getElementById('save-btn');
+        const cancelBtn = document.getElementById('cancel-btn');
+        const printBtn = document.getElementById('print-btn');
+        
+        // Image modal elements
+        const imageModal = document.getElementById('imageModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const enlargedImage = document.getElementById('enlargedImage');
+        const enlargeBtns = document.querySelectorAll('.enlarge-btn');
+        
+        // Initialize Summary Chart
+        initSummary();
+        
+        // Initialize Classification Results
+        initClassificationResults();
+        
+        // Initialize Charts
+        initDonutChart();
+        initRadarChart();
+        
+        // Summary Initialization
+        function initSummary() {
+            const summaryChart = document.getElementById('summary-chart-foreground');
+            const summaryPercentage = document.querySelector('.summary-percentage');
+            const summaryTitle = document.getElementById('summary-title');
+            const summaryDescription = document.getElementById('summary-description');
+            const summaryResult = document.getElementById('summary-result');
+            
+            // Determine highest probability and its type
+            const probabilities = {
+                glioma: scanData.gliomaProbability,
+                meningioma: scanData.meningiomaProbability,
+                pituitary: scanData.pituitaryProbability,
+                no_tumor: scanData.noTumorProbability
+            };
+            
+            const highestProbType = Object.keys(probabilities).reduce((a, b) => 
+                probabilities[a] > probabilities[b] ? a : b);
+            const highestProb = probabilities[highestProbType];
+            
+            // Update chart
+            if (summaryChart) {
+                summaryChart.setAttribute('stroke-dasharray', `${highestProb}, 100`);
+                
+                // Set color based on detection
+                if (scanData.cancerDetected && highestProbType !== 'no_tumor') {
+                    summaryChart.classList.add('text-red-500');
+                    summaryResult.classList.add('bg-red-50');
+                    summaryTitle.classList.add('text-red-700');
+                } else {
+                    summaryChart.classList.add('text-green-500');
+                    summaryResult.classList.add('bg-green-50');
+                    summaryTitle.classList.add('text-green-700');
+                }
+            }
+            
+            // Update text
+            if (summaryPercentage) summaryPercentage.textContent = `${highestProb}%`;
+            
+            if (summaryTitle) {
+                if (scanData.cancerDetected && highestProbType !== 'no_tumor') {
+                    summaryTitle.textContent = 'Tumor Detected';
+                } else {
+                    summaryTitle.textContent = 'No Tumor Detected';
+                }
+            }
+            
+            if (summaryDescription) {
+                if (scanData.cancerDetected && highestProbType !== 'no_tumor') {
+                    summaryDescription.textContent = `Analysis indicates the presence of a ${formatTumorType(highestProbType)} with ${highestProb}% confidence. Further clinical evaluation is recommended.`;
+                } else {
+                    summaryDescription.textContent = `Analysis indicates no significant tumor presence with ${highestProb}% confidence. Regular follow-up is recommended as per standard protocol.`;
+                }
+            }
+        }
+        
+        // Format tumor type for display
+        function formatTumorType(type) {
+            if (type === 'no_tumor') return 'No Tumor';
+            return type.charAt(0).toUpperCase() + type.slice(1);
+        }
+        
+        // Classification Results Initialization
+        function initClassificationResults() {
+            const classificationResult = document.getElementById('classification-result');
+            const resultBadge = document.getElementById('result-badge');
+            const tumorTypeElement = document.getElementById('tumor-type');
+            const tumorDescriptionElement = document.getElementById('tumor-description');
+            
+            // Probability elements
+            const gliomaProbability = document.getElementById('glioma-probability');
+            const meningiomaProbability = document.getElementById('meningioma-probability');
+            const pituitaryProbability = document.getElementById('pituitary-probability');
+            const noTumorProbability = document.getElementById('no-tumor-probability');
+            
+            // Probability bars
+            const gliomaBar = document.getElementById('glioma-bar');
+            const meningiomaBar = document.getElementById('meningioma-bar');
+            const pituitaryBar = document.getElementById('pituitary-bar');
+            const noTumorBar = document.getElementById('no-tumor-bar');
+            
+            // Set probabilities
+            if (gliomaProbability) gliomaProbability.textContent = `${scanData.gliomaProbability}%`;
+            if (meningiomaProbability) meningiomaProbability.textContent = `${scanData.meningiomaProbability}%`;
+            if (pituitaryProbability) pituitaryProbability.textContent = `${scanData.pituitaryProbability}%`;
+            if (noTumorProbability) noTumorProbability.textContent = `${scanData.noTumorProbability}%`;
+            
+            // Set probability bars
+            if (gliomaBar) gliomaBar.style.width = `${scanData.gliomaProbability}%`;
+            if (meningiomaBar) meningiomaBar.style.width = `${scanData.meningiomaProbability}%`;
+            if (pituitaryBar) pituitaryBar.style.width = `${scanData.pituitaryProbability}%`;
+            if (noTumorBar) noTumorBar.style.width = `${scanData.noTumorProbability}%`;
+            
+            // Update detection status
+            if (resultBadge) {
+                if (scanData.cancerDetected) {
+                    resultBadge.className = 'px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800';
+                    resultBadge.textContent = 'Positive Finding';
+                } else {
+                    resultBadge.className = 'px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800';
+                    resultBadge.textContent = 'Negative Finding';
+                }
+            }
+            
+            // Update tumor info
+            if (tumorTypeElement) {
+                if (scanData.cancerDetected) {
+                    tumorTypeElement.textContent = scanData.cancerType || 'Unspecified Tumor Type';
+                } else {
+                    tumorTypeElement.textContent = 'No Tumor Detected';
+                }
+            }
+            
+            // Set tumor descriptions
+            if (tumorDescriptionElement) {
+                if (scanData.cancerDetected) {
+                    switch (scanData.cancerType.toLowerCase()) {
+                        case 'glioma':
+                            tumorDescriptionElement.textContent = 'Gliomas are tumors that occur in the brain and spinal cord. They begin in the glial cells that surround and support nerve cells.';
+                            break;
+                        case 'meningioma':
+                            tumorDescriptionElement.textContent = 'Meningiomas are tumors that arise from the meninges — the membranes that surround your brain and spinal cord.';
+                            break;
+                        case 'pituitary':
+                            tumorDescriptionElement.textContent = 'Pituitary tumors are abnormal growths that develop in the pituitary gland, which is located at the base of the brain.';
+                            break;
+                        default:
+                            tumorDescriptionElement.textContent = 'Tumor detected. Further clinical evaluation is recommended to determine the exact type and appropriate treatment options.';
+                    }
+                } else {
+                    tumorDescriptionElement.textContent = 'No significant tumor formations detected in the analyzed scan.';
+                }
+            }
+        }
+        
+        // Initialize Donut Chart
+        function initDonutChart() {
+            const ctx = document.getElementById('probabilityDonutChart');
+            if (!ctx) return;
+            
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Glioma', 'Meningioma', 'Pituitary', 'No Tumor'],
+                    datasets: [{
+                        data: [
+                            scanData.gliomaProbability,
+                            scanData.meningiomaProbability,
+                            scanData.pituitaryProbability,
+                            scanData.noTumorProbability
+                        ],
+                        backgroundColor: [
+                            'rgba(99, 102, 241, 0.8)',  // Indigo for Glioma
+                            'rgba(234, 179, 8, 0.8)',   // Yellow for Meningioma
+                            'rgba(147, 51, 234, 0.8)',  // Purple for Pituitary
+                            'rgba(34, 197, 94, 0.8)'    // Green for No Tumor
+                        ],
+                        borderColor: [
+                            'rgba(99, 102, 241, 1)',
+                            'rgba(234, 179, 8, 1)',
+                            'rgba(147, 51, 234, 1)',
+                            'rgba(34, 197, 94, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Probability Distribution'
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Initialize Radar Chart
+        function initRadarChart() {
+            const ctx = document.getElementById('radarChart');
+            if (!ctx) return;
+            
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Tumor Size', 'Border Definition', 'Intensity', 'Heterogeneity', 'Edema'],
+                    datasets: [{
+                        label: 'Scan Characteristics',
+                        data: generateRadarData(),
+                        backgroundColor: 'rgba(99, 102, 241, 0.2)',
+                        borderColor: 'rgba(99, 102, 241, 1)',
+                        pointBackgroundColor: 'rgba(99, 102, 241, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(99, 102, 241, 1)'
+                    }]
+                },
+                options: {
+                    scales: {
+                        r: {
+                            angleLines: {
+                                display: true
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 10
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Generate radar chart data based on tumor type
+        function generateRadarData() {
+            const probabilities = {
+                glioma: scanData.gliomaProbability,
+                meningioma: scanData.meningiomaProbability,
+                pituitary: scanData.pituitaryProbability,
+                no_tumor: scanData.noTumorProbability
+            };
+            
+            const highestProbType = Object.keys(probabilities).reduce((a, b) => 
+                probabilities[a] > probabilities[b] ? a : b);
+                
+            // Characteristic profiles for different tumor types
+            // These are simplified examples - real medical data would be more precise
+            switch(highestProbType) {
+                case 'glioma':
+                    return [7, 4, 8, 9, 7]; // High heterogeneity, poorly defined borders
+                case 'meningioma':
+                    return [6, 9, 7, 4, 3]; // Well-defined borders, moderate size
+                case 'pituitary':
+                    return [4, 8, 9, 6, 2]; // Smaller size, high intensity
+                case 'no_tumor':
+                default:
+                    return [1, 9, 3, 2, 1]; // Small size, well-defined, low intensity
+            }
+        }
+        
+        // Handle enlarged image modal
+        enlargeBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const imgSrc = this.getAttribute('data-img');
+                enlargedImage.src = imgSrc;
+                imageModal.classList.remove('hidden');
+                document.body.classList.add('overflow-hidden'); // Prevent scrolling while modal is open
+            });
+        });
+        
+        closeModalBtn.addEventListener('click', function() {
+            imageModal.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+        });
+        
+        // Also close modal when clicking outside the image
+        imageModal.addEventListener('click', function(e) {
+            if (e.target === imageModal) {
+                imageModal.classList.add('hidden');
+                document.body.classList.remove('overflow-hidden');
+            }
+        });
+        
+        // Handle print button
+        printBtn.addEventListener('click', function() {
+            window.print();
+        });
+        
+        // Handle save button
+        saveBtn.addEventListener('click', function() {
+            // Get doctor's notes
+            const doctorsNotes = document.getElementById('doctors-notes').value;
+            
+            // In a real app, we would save the notes to the server here
+            alert('Scan results and doctor\'s notes saved successfully!');
+            
+            // Redirect to dashboard
+            window.location.href = '/dashboard';
+        });
+        
+        // Handle cancel button
+        cancelBtn.addEventListener('click', function() {
+            if (confirm('Are you sure you want to cancel? Any unsaved notes will be lost.')) {
+                window.location.href = '/dashboard'; // Redirect to dashboard
+            }
+        });
+    });
+</script>
+
+<!-- Print styles -->
+<style>
+    /* Styles for Scan Results Page */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    #result-container, #result-container * {
+        visibility: visible;
+    }
+    #result-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+    .enlarge-btn, #doctors-notes {
+        display: none;
+    }
+}
+
+/* Status Indicators */
+.step-indicator.completed {
+    border-color: #3b82f6;
+    background-color: #3b82f6;
+    color: white;
+}
+
+.step-indicator.active {
+    border-color: #3b82f6;
+    color: #3b82f6;
+}
+
+/* Step Connectors */
+.step-connector {
+    height: 0.125rem;
+    width: 4rem;
+    background-color: #d1d5db;
+}
+
+.step-connector.completed {
+    background-color: #3b82f6;
+}
+
+/* Gradient Background for Save Button */
+.gradient-bg {
+    background: linear-gradient(to right, #3b82f6, #2563eb);
+    transition: opacity 0.3s ease;
+}
+
+/* Image Enlarge Button Hover Effect */
+.enlarge-btn {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.relative:hover .enlarge-btn {
+    opacity: 1;
+}
+
+/* Modal Background Transition */
+#imageModal {
+    transition: background-color 0.3s ease;
+}
+
+/* Chart Hover Effects */
+.chart-hover-effect {
+    transition: transform 0.3s ease;
+}
+
+.chart-hover-effect:hover {
+    transform: scale(1.05);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .step-connector {
+        width: 2rem;
+    }
+}
+
+/* Print Specific Styles */
+@media print {
+    .gradient-bg {
+        background: none;
+        background-color: #000;
+        color: #000;
+    }
+    
+    canvas {
+        max-width: 100%;
+        height: auto !important;
+    }
+}
+</style>
