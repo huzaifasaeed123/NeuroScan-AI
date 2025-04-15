@@ -1,21 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NeuroScan - <%= title %></title>
+    <title>NeuroScan - <%= title %>
+    </title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         .gradient-bg {
             background: linear-gradient(120deg, #3b82f6 0%, #1e40af 100%);
         }
+
         .login-bg {
             background-image: url('#');
             background-size: cover;
             background-position: center;
             position: relative;
         }
+
         .login-bg::before {
             content: '';
             position: absolute;
@@ -25,25 +29,31 @@
             left: 0;
             background: linear-gradient(to right, rgba(30, 64, 175, 0.9), rgba(59, 130, 246, 0.7));
         }
+
         .form-tab {
             cursor: pointer;
             transition: all 0.3s ease;
         }
+
         .form-tab.active {
             border-bottom: 3px solid #3b82f6;
             color: #1e40af;
             font-weight: 600;
         }
+
         .form-container {
             display: none;
         }
+
         .form-container.active {
             display: block;
         }
+
         .auth-container {
             height: 100vh;
             display: flex;
         }
+
         .left-panel {
             position: relative;
             display: flex;
@@ -51,33 +61,40 @@
             justify-content: flex-start;
             height: 100%;
             padding: 0 3rem;
-            padding-top: 31vh; /* Position content lower */
+            padding-top: 31vh;
+            /* Position content lower */
         }
+
         .right-panel {
             height: 100%;
             overflow-y: auto;
         }
+
         .form-wrapper {
             min-height: 100%;
             display: flex;
             flex-direction: column;
         }
+
         .flash-message {
             margin-bottom: 1rem;
             padding: 1rem;
             border-radius: 0.25rem;
             border-left-width: 4px;
         }
+
         .flash-message.success {
             background-color: #d1fae5;
             border-color: #10b981;
             color: #065f46;
         }
+
         .flash-message.error {
             background-color: #fee2e2;
             border-color: #ef4444;
             color: #b91c1c;
         }
+
         .flash-message.info {
             background-color: #e0f2fe;
             border-color: #3b82f6;
@@ -85,6 +102,7 @@
         }
     </style>
 </head>
+
 <body class="bg-gray-50">
     <div class="auth-container">
         <!-- Left side - Image with overlay -->
@@ -122,7 +140,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Right side - Login form -->
         <div class="w-full lg:w-1/3 right-panel bg-white">
             <div class="form-wrapper p-8 md:p-12">
@@ -132,69 +150,79 @@
                     </div>
                     <h1 class="text-2xl font-bold text-gray-800">NeuroScan</h1>
                 </div>
-                
+
                 <div class="flex-1 flex flex-col justify-center my-auto">
                     <h2 class="text-2xl font-bold text-gray-800 mb-2">Welcome Back</h2>
                     <p class="text-gray-600 mb-8">Please sign in to your account or create a new one</p>
-                    
+
                     <!-- Improved Flash messages section -->
                     <div id="flash-messages" class="mb-6">
-                        <% if(typeof messages !== 'undefined') { %>
+                        <% if(typeof messages !=='undefined' ) { %>
                             <% if(messages.success_msg) { %>
                                 <div class="flash-message success" role="alert">
                                     <div class="flex">
                                         <div class="flex-shrink-0">
                                             <i class="fas fa-check-circle mr-2"></i>
                                         </div>
-                                        <div><%= messages.success_msg %></div>
-                                    </div>
-                                </div>
-                            <% } %>
-                            <% if(messages && messages.error_msg) { %>
-                                <div class="flash-message error" role="alert">
-                                    <div class="flex">
-                                        <div class="flex-shrink-0">
-                                            <i class="fas fa-exclamation-circle mr-2"></i>
+                                        <div>
+                                            <%= messages.success_msg %>
                                         </div>
-                                        <div><%= messages.error_msg %></div>
                                     </div>
                                 </div>
-                            <% } %>
-                            
-                            <% if(messages.error) { %>
-                                <div class="flash-message error" role="alert">
-                                    <div class="flex">
-                                        <div class="flex-shrink-0">
-                                            <i class="fas fa-exclamation-triangle mr-2"></i>
+                                <% } %>
+                                    <% if(messages && messages.error_msg) { %>
+                                        <div class="flash-message error" role="alert">
+                                            <div class="flex">
+                                                <div class="flex-shrink-0">
+                                                    <i class="fas fa-exclamation-circle mr-2"></i>
+                                                </div>
+                                                <div>
+                                                    <%= messages.error_msg %>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div><%= messages.error %></div>
-                                    </div>
-                                </div>
-                            <% } %>
-                            
-                            <% if(messages.info) { %>
-                                <div class="flash-message info" role="alert">
-                                    <div class="flex">
-                                        <div class="flex-shrink-0">
-                                            <i class="fas fa-info-circle mr-2"></i>
-                                        </div>
-                                        <div><%= messages.info %></div>
-                                    </div>
-                                </div>
-                            <% } %>
-                        <% } %>
+                                        <% } %>
+
+                                            <% if(messages.error) { %>
+                                                <div class="flash-message error" role="alert">
+                                                    <div class="flex">
+                                                        <div class="flex-shrink-0">
+                                                            <i class="fas fa-exclamation-triangle mr-2"></i>
+                                                        </div>
+                                                        <div>
+                                                            <%= messages.error %>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <% } %>
+
+                                                    <% if(messages.info) { %>
+                                                        <div class="flash-message info" role="alert">
+                                                            <div class="flex">
+                                                                <div class="flex-shrink-0">
+                                                                    <i class="fas fa-info-circle mr-2"></i>
+                                                                </div>
+                                                                <div>
+                                                                    <%= messages.info %>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <% } %>
+                                                            <% } %>
                     </div>
-                    
+
                     <!-- Form Tabs -->
                     <div class="flex border-b border-gray-200 mb-6">
-                        <div id="login-tab" class="form-tab <%= activeTab === 'login' ? 'active' : '' %> px-4 py-2 text-center flex-1">
+                        <div id="login-tab"
+                            class="form-tab <%= activeTab === 'login' ? 'active' : '' %> px-4 py-2 text-center flex-1">
                             Sign In
                         </div>
-                        <div id="signup-tab" class="form-tab <%= activeTab === 'signup' ? 'active' : '' %> px-4 py-2 text-center flex-1">
+                        <div id="signup-tab"
+                            class="form-tab <%= activeTab === 'signup' ? 'active' : '' %> px-4 py-2 text-center flex-1">
                             Sign Up
                         </div>
                     </div>
-                    
+
                     <!-- Login Form -->
                     <div id="login-form" class="form-container <%= activeTab === 'login' ? 'active' : '' %>">
                         <form action="/auth/login" method="POST">
@@ -206,7 +234,9 @@
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <i class="fas fa-envelope text-gray-400"></i>
                                     </div>
-                                    <input class="shadow-sm appearance-none border rounded w-full py-3 px-3 pl-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500" id="email" name="email" type="email" placeholder="Enter your email" required>
+                                    <input
+                                        class="shadow-sm appearance-none border rounded w-full py-3 px-3 pl-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
+                                        id="email" name="email" type="email" placeholder="Enter your email" required>
                                 </div>
                             </div>
                             <div class="mb-6">
@@ -220,7 +250,10 @@
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <i class="fas fa-lock text-gray-400"></i>
                                     </div>
-                                    <input class="shadow-sm appearance-none border rounded w-full py-3 px-3 pl-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500" id="password" name="password" type="password" placeholder="Enter your password" required>
+                                    <input
+                                        class="shadow-sm appearance-none border rounded w-full py-3 px-3 pl-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
+                                        id="password" name="password" type="password" placeholder="Enter your password"
+                                        required>
                                     <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
                                         <i class="fas fa-eye text-gray-400 cursor-pointer toggle-password"></i>
                                     </div>
@@ -233,18 +266,20 @@
                                 </label>
                             </div>
                             <div class="mb-6">
-                                <button type="submit" class="w-full gradient-bg hover:opacity-90 text-white font-bold py-3 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out">
+                                <button type="submit"
+                                    class="w-full gradient-bg hover:opacity-90 text-white font-bold py-3 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out">
                                     Sign In
                                 </button>
                             </div>
                         </form>
                         <div class="text-center">
                             <p class="text-sm text-gray-600">
-                                Don't have an account? <a href="#" id="switch-to-signup" class="text-blue-600 hover:text-blue-800 font-medium">Sign up here</a>
+                                Don't have an account? <a href="#" id="switch-to-signup"
+                                    class="text-blue-600 hover:text-blue-800 font-medium">Sign up here</a>
                             </p>
                         </div>
                     </div>
-                    
+
                     <!-- Signup Form -->
                     <div id="signup-form" class="form-container <%= activeTab === 'signup' ? 'active' : '' %>">
                         <form action="/auth/signup" method="POST">
@@ -253,40 +288,61 @@
                                     <label class="block text-gray-700 text-sm font-bold mb-2" for="firstName">
                                         First Name
                                     </label>
-                                    <input class="shadow-sm appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500" id="firstName" name="firstName" type="text" placeholder="First name" value="<%= typeof firstName != 'undefined' ? firstName : '' %>" required>
+                                    <input
+                                        class="shadow-sm appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
+                                        id="firstName" name="firstName" type="text" placeholder="First name"
+                                        value="<%= typeof firstName != 'undefined' ? firstName : '' %>" required>
                                 </div>
                                 <div>
                                     <label class="block text-gray-700 text-sm font-bold mb-2" for="lastName">
                                         Last Name
                                     </label>
-                                    <input class="shadow-sm appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500" id="lastName" name="lastName" type="text" placeholder="Last name" value="<%= typeof lastName != 'undefined' ? lastName : '' %>" required>
+                                    <input
+                                        class="shadow-sm appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
+                                        id="lastName" name="lastName" type="text" placeholder="Last name"
+                                        value="<%= typeof lastName != 'undefined' ? lastName : '' %>" required>
                                 </div>
                             </div>
                             <div class="mb-6">
                                 <label class="block text-gray-700 text-sm font-bold mb-2" for="specialization">
                                     Medical Specialty
                                 </label>
-                                <select class="shadow-sm appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500" id="specialization" name="specialization">
+                                <select
+                                    class="shadow-sm appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
+                                    id="specialization" name="specialization">
                                     <option value="">Select your specialty</option>
-                                    <option value="neuroradiology" <%= typeof specialization != 'undefined' && specialization === 'neuroradiology' ? 'selected' : '' %>>Neuroradiology</option>
-                                    <option value="radiology" <%= typeof specialization != 'undefined' && specialization === 'radiology' ? 'selected' : '' %>>Radiology</option>
-                                    <option value="neurology" <%= typeof specialization != 'undefined' && specialization === 'neurology' ? 'selected' : '' %>>Neurology</option>
-                                    <option value="neurosurgery" <%= typeof specialization != 'undefined' && specialization === 'neurosurgery' ? 'selected' : '' %>>Neurosurgery</option>
-                                    <option value="oncology" <%= typeof specialization != 'undefined' && specialization === 'oncology' ? 'selected' : '' %>>Oncology</option>
-                                    <option value="other" <%= typeof specialization != 'undefined' && specialization === 'other' ? 'selected' : '' %>>Other</option>
+                                    <option value="neuroradiology" <%=typeof specialization !='undefined' &&
+                                        specialization==='neuroradiology' ? 'selected' : '' %>>Neuroradiology</option>
+                                    <option value="radiology" <%=typeof specialization !='undefined' &&
+                                        specialization==='radiology' ? 'selected' : '' %>>Radiology</option>
+                                    <option value="neurology" <%=typeof specialization !='undefined' &&
+                                        specialization==='neurology' ? 'selected' : '' %>>Neurology</option>
+                                    <option value="neurosurgery" <%=typeof specialization !='undefined' &&
+                                        specialization==='neurosurgery' ? 'selected' : '' %>>Neurosurgery</option>
+                                    <option value="oncology" <%=typeof specialization !='undefined' &&
+                                        specialization==='oncology' ? 'selected' : '' %>>Oncology</option>
+                                    <option value="other" <%=typeof specialization !='undefined' &&
+                                        specialization==='other' ? 'selected' : '' %>>Other</option>
                                 </select>
                             </div>
                             <div class="mb-6">
                                 <label class="block text-gray-700 text-sm font-bold mb-2" for="hospitalAffiliation">
                                     Hospital Affiliation
                                 </label>
-                                <input class="shadow-sm appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500" id="hospitalAffiliation" name="hospitalAffiliation" type="text" placeholder="Hospital or clinic name" value="<%= typeof hospitalAffiliation != 'undefined' ? hospitalAffiliation : '' %>">
+                                <input
+                                    class="shadow-sm appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
+                                    id="hospitalAffiliation" name="hospitalAffiliation" type="text"
+                                    placeholder="Hospital or clinic name"
+                                    value="<%= typeof hospitalAffiliation != 'undefined' ? hospitalAffiliation : '' %>">
                             </div>
                             <div class="mb-6">
                                 <label class="block text-gray-700 text-sm font-bold mb-2" for="phoneNumber">
                                     Phone Number
                                 </label>
-                                <input class="shadow-sm appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500" id="phoneNumber" name="phoneNumber" type="tel" placeholder="Your phone number" value="<%= typeof phoneNumber != 'undefined' ? phoneNumber : '' %>">
+                                <input
+                                    class="shadow-sm appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
+                                    id="phoneNumber" name="phoneNumber" type="tel" placeholder="Your phone number"
+                                    value="<%= typeof phoneNumber != 'undefined' ? phoneNumber : '' %>">
                             </div>
                             <div class="mb-6">
                                 <label class="block text-gray-700 text-sm font-bold mb-2" for="signupEmail">
@@ -296,7 +352,10 @@
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <i class="fas fa-envelope text-gray-400"></i>
                                     </div>
-                                    <input class="shadow-sm appearance-none border rounded w-full py-3 px-3 pl-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500" id="signupEmail" name="email" type="email" placeholder="Your email address" value="<%= typeof email != 'undefined' ? email : '' %>" required>
+                                    <input
+                                        class="shadow-sm appearance-none border rounded w-full py-3 px-3 pl-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
+                                        id="signupEmail" name="email" type="email" placeholder="Your email address"
+                                        value="<%= typeof email != 'undefined' ? email : '' %>" required>
                                 </div>
                             </div>
                             <div class="mb-6">
@@ -307,7 +366,10 @@
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <i class="fas fa-lock text-gray-400"></i>
                                     </div>
-                                    <input class="shadow-sm appearance-none border rounded w-full py-3 px-3 pl-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500" id="signupPassword" name="password" type="password" placeholder="Create a password" required>
+                                    <input
+                                        class="shadow-sm appearance-none border rounded w-full py-3 px-3 pl-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
+                                        id="signupPassword" name="password" type="password"
+                                        placeholder="Create a password" required>
                                     <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
                                         <i class="fas fa-eye text-gray-400 cursor-pointer toggle-password"></i>
                                     </div>
@@ -322,7 +384,10 @@
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <i class="fas fa-lock text-gray-400"></i>
                                     </div>
-                                    <input class="shadow-sm appearance-none border rounded w-full py-3 px-3 pl-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500" id="confirmPassword" name="confirmPassword" type="password" placeholder="Confirm your password" required>
+                                    <input
+                                        class="shadow-sm appearance-none border rounded w-full py-3 px-3 pl-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
+                                        id="confirmPassword" name="confirmPassword" type="password"
+                                        placeholder="Confirm your password" required>
                                     <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
                                         <i class="fas fa-eye text-gray-400 cursor-pointer toggle-password"></i>
                                     </div>
@@ -330,35 +395,40 @@
                             </div>
                             <div class="mb-6">
                                 <label class="flex items-start">
-                                    <input type="checkbox" name="agreeTerms" class="form-checkbox h-4 w-4 text-blue-600 mt-1" required>
+                                    <input type="checkbox" name="agreeTerms"
+                                        class="form-checkbox h-4 w-4 text-blue-600 mt-1" required>
                                     <span class="ml-2 text-sm text-gray-600">
-                                        I agree to the <a href="#" class="text-blue-600 hover:text-blue-800">Terms of Service</a> and <a href="#" class="text-blue-600 hover:text-blue-800">Privacy Policy</a>
+                                        I agree to the <a href="#" class="text-blue-600 hover:text-blue-800">Terms of
+                                            Service</a> and <a href="#"
+                                            class="text-blue-600 hover:text-blue-800">Privacy Policy</a>
                                     </span>
                                 </label>
                             </div>
                             <div class="mb-6">
-                                <button type="submit" class="w-full gradient-bg hover:opacity-90 text-white font-bold py-3 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out">
+                                <button type="submit"
+                                    class="w-full gradient-bg hover:opacity-90 text-white font-bold py-3 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out">
                                     Create Account
                                 </button>
                             </div>
                         </form>
                         <div class="text-center">
                             <p class="text-sm text-gray-600">
-                                Already have an account? <a href="#" id="switch-to-login" class="text-blue-600 hover:text-blue-800 font-medium">Sign in here</a>
+                                Already have an account? <a href="#" id="switch-to-login"
+                                    class="text-blue-600 hover:text-blue-800 font-medium">Sign in here</a>
                             </p>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="mt-8 text-center text-xs text-gray-500">
                     <p>© 2025 NeuroScan. All rights reserved.</p>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Tab switching
             const loginTab = document.getElementById('login-tab');
             const signupTab = document.getElementById('signup-tab');
@@ -366,7 +436,7 @@
             const signupForm = document.getElementById('signup-form');
             const switchToSignup = document.getElementById('switch-to-signup');
             const switchToLogin = document.getElementById('switch-to-login');
-            
+
             function showLoginForm() {
                 loginTab.classList.add('active');
                 signupTab.classList.remove('active');
@@ -374,7 +444,7 @@
                 signupForm.classList.remove('active');
                 history.pushState(null, '', '/auth/login');
             }
-            
+
             function showSignupForm() {
                 signupTab.classList.add('active');
                 loginTab.classList.remove('active');
@@ -382,38 +452,48 @@
                 loginForm.classList.remove('active');
                 history.pushState(null, '', '/auth/signup');
             }
-            
+
             loginTab.addEventListener('click', showLoginForm);
             signupTab.addEventListener('click', showSignupForm);
-            switchToSignup.addEventListener('click', function(e) {
+            switchToSignup.addEventListener('click', function (e) {
                 e.preventDefault();
                 showSignupForm();
             });
-            switchToLogin.addEventListener('click', function(e) {
+            switchToLogin.addEventListener('click', function (e) {
                 e.preventDefault();
                 showLoginForm();
             });
-            
-            // Password toggle visibility
+
+            // Fixed password toggle visibility
             const togglePasswordButtons = document.querySelectorAll('.toggle-password');
-            togglePasswordButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const passwordInput = this.closest('div').querySelector('input');
-                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-                    passwordInput.setAttribute('type', type);
-                    this.classList.toggle('fa-eye');
-                    this.classList.toggle('fa-eye-slash');
+            if (togglePasswordButtons.length > 0) {
+                togglePasswordButtons.forEach(button => {
+                    button.addEventListener('click', function () {
+                        // Find the input field in the same relative container
+                        const passwordInput = this.closest('.relative').querySelector('input');
+
+                        // Toggle between password visibility
+                        if (passwordInput.type === 'password') {
+                            passwordInput.type = 'text';
+                            this.classList.remove('fa-eye');
+                            this.classList.add('fa-eye-slash');
+                        } else {
+                            passwordInput.type = 'password';
+                            this.classList.remove('fa-eye-slash');
+                            this.classList.add('fa-eye');
+                        }
+                    });
                 });
-            });
-            
+            }
+
             // Auto-hide flash messages after 5 seconds
             const flashMessages = document.querySelectorAll('.flash-message');
             if (flashMessages.length > 0) {
-                setTimeout(function() {
+                setTimeout(function () {
                     flashMessages.forEach(message => {
                         message.style.transition = 'opacity 0.5s ease-out';
                         message.style.opacity = '0';
-                        setTimeout(function() {
+                        setTimeout(function () {
                             message.style.display = 'none';
                         }, 500);
                     });
@@ -422,4 +502,5 @@
         });
     </script>
 </body>
+
 </html>
