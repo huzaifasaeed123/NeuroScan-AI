@@ -139,7 +139,6 @@
                     
                     <!-- Improved Flash messages section -->
                     <div id="flash-messages" class="mb-6">
-                        <%=console.log(messages)  %>
                         <% if(typeof messages !== 'undefined') { %>
                             <% if(messages.success_msg) { %>
                                 <div class="flash-message success" role="alert">
@@ -151,7 +150,6 @@
                                     </div>
                                 </div>
                             <% } %>
-                            <%=console.log(messages)  %>
                             <% if(messages && messages.error_msg) { %>
                                 <div class="flash-message error" role="alert">
                                     <div class="flex">

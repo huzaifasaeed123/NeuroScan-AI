@@ -84,6 +84,12 @@ app.use('/scans', scanRoutes);
 app.use('/dashboard', dashboardRoutes);
 
 
+
+// 11. Home route redirects to login
+app.get("/", (req, res) => {
+  res.redirect("/auth/login");
+});
+
 // Error handling middleware
 app.use((req, res, next) => {
   res.status(404).render('error', { 
@@ -95,10 +101,6 @@ app.use((req, res, next) => {
   });
 });
 
-// 11. Home route redirects to login
-app.get("/", (req, res) => {
-  res.redirect("/auth/login");
-});
 
 // 12. Start the server
 app.listen(8000, () => {
