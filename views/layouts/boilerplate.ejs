@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NeuroScan - <%= title %></title>
+    <title>NeuroScan - <%= title %>
+    </title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -72,8 +73,11 @@
                                 <i class="fas fa-user text-blue-500"></i>
                             </div>
                             <div class="ml-3">
-                                <p class="text-sm font-medium text-gray-700">Dr. <%= user ? user.name : '' %></p>
-                                <p class="text-xs font-medium text-gray-500"><%= user ? user.specialization : '' %></p>
+                                <p class="text-sm font-medium text-gray-700">Dr. <%= user ? user.name : '' %>
+                                </p>
+                                <p class="text-xs font-medium text-gray-500">
+                                    <%= user ? user.specialization : '' %>
+                                </p>
                             </div>
                         </a>
                     </div>
@@ -89,11 +93,14 @@
                     <button class="md:hidden mr-4 text-gray-500 focus:outline-none hover:text-gray-600">
                         <i class="fas fa-bars"></i>
                     </button>
-                    <h1 class="text-lg font-semibold text-gray-800"><%= title %></h1>
+                    <h1 class="text-lg font-semibold text-gray-800">
+                        <%= title %>
+                    </h1>
                 </div>
                 <div class="flex items-center space-x-4">
                     <form action="/auth/logout" method="POST" id="logout-form">
-                        <button type="submit" id="logout-btn" class="flex items-center text-red-500 hover:text-red-600 transition-colors duration-200">
+                        <button type="submit" id="logout-btn"
+                            class="flex items-center text-red-500 hover:text-red-600 transition-colors duration-200">
                             <i class="fas fa-sign-out-alt mr-2"></i>
                             <span class="font-medium">Logout</span>
                         </button>
@@ -104,31 +111,67 @@
             <!-- Main content area -->
             <main class="flex-1 overflow-y-auto p-6 bg-gray-50">
                 <!-- Flash Messages -->
-                <% if (messages && messages.success_msg) { %>
-                <div id="success-alert"
-                    class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-6 flex items-center"
-                    role="alert">
-                    <i class="fas fa-check-circle mr-3"></i>
-                    <span><%= messages.success_msg %></span>
-                    <button class="absolute top-0 bottom-0 right-0 px-4 py-3"
-                        onclick="this.parentElement.style.display='none'">
-                        <i class="fas fa-times"></i>
-                    </button>
+                <div id="flash-messages" class="mb-6">
+                    <% if (messages && messages.success_msg) { %>
+                        <div id="success-alert"
+                            class="flash-message bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-6 flex items-center"
+                            role="alert">
+                            <i class="fas fa-check-circle mr-3"></i>
+                            <span>
+                                <%= messages.success_msg %>
+                            </span>
+                            <button class="absolute top-0 bottom-0 right-0 px-4 py-3"
+                                onclick="this.parentElement.style.display='none'">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <% } %>
+
+                            <% if (messages && messages.error_msg) { %>
+                                <div id="error-alert"
+                                    class="flash-message bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6 flex items-center"
+                                    role="alert">
+                                    <i class="fas fa-exclamation-circle mr-3"></i>
+                                    <span>
+                                        <%= messages.error_msg %>
+                                    </span>
+                                    <button class="absolute top-0 bottom-0 right-0 px-4 py-3"
+                                        onclick="this.parentElement.style.display='none'">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                                <% } %>
+
+                                    <% if (messages && messages.error) { %>
+                                        <div id="general-error-alert"
+                                            class="flash-message bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6 flex items-center"
+                                            role="alert">
+                                            <i class="fas fa-exclamation-triangle mr-3"></i>
+                                            <span>
+                                                <%= messages.error %>
+                                            </span>
+                                            <button class="absolute top-0 bottom-0 right-0 px-4 py-3"
+                                                onclick="this.parentElement.style.display='none'">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                        <% } %>
+
+                                            <% if (messages && messages.info) { %>
+                                                <div id="info-alert"
+                                                    class="flash-message bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative mb-6 flex items-center"
+                                                    role="alert">
+                                                    <i class="fas fa-info-circle mr-3"></i>
+                                                    <span>
+                                                        <%= messages.info %>
+                                                    </span>
+                                                    <button class="absolute top-0 bottom-0 right-0 px-4 py-3"
+                                                        onclick="this.parentElement.style.display='none'">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </div>
+                                                <% } %>
                 </div>
-                <% } %>
-                
-                <% if (messages && messages.error_msg) { %>
-                <div id="error-alert"
-                    class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6 flex items-center"
-                    role="alert">
-                    <i class="fas fa-exclamation-circle mr-3"></i>
-                    <span><%= messages.error_msg %></span>
-                    <button class="absolute top-0 bottom-0 right-0 px-4 py-3"
-                        onclick="this.parentElement.style.display='none'">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <% } %>
 
                 <!-- Content from the view -->
                 <%- body %>
@@ -149,14 +192,28 @@
                     }
                 });
             }
-            
+
             // Handle logout button
             const logoutBtn = document.getElementById('logout-btn');
             const logoutForm = document.getElementById('logout-form');
             if (logoutBtn && logoutForm) {
-                logoutBtn.addEventListener('click', function() {
+                logoutBtn.addEventListener('click', function () {
                     logoutForm.submit();
                 });
+            }
+
+            // Auto-hide flash messages after 5 seconds
+            const flashMessages = document.querySelectorAll('.flash-message');
+            if (flashMessages.length > 0) {
+                setTimeout(function () {
+                    flashMessages.forEach(message => {
+                        message.style.transition = 'opacity 0.5s ease-out';
+                        message.style.opacity = '0';
+                        setTimeout(function () {
+                            message.style.display = 'none';
+                        }, 500);
+                    });
+                }, 5000);
             }
         });
     </script>
@@ -164,4 +221,5 @@
     <!-- Page-specific scripts -->
     <%- script %>
 </body>
+
 </html>

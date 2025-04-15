@@ -1,0 +1,99 @@
+<!-- views/404.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found - NeuroWeb AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="flex flex-col items-center justify-center min-h-screen p-5 text-center">
+        <!-- Brain scan illustration - simple SVG -->
+        <div class="mb-8">
+            <svg width="200" height="200" viewBox="0 0 200 200" class="mx-auto">
+                <path d="M100,20 C55,20 20,55 20,100 C20,145 55,180 100,180 C145,180 180,145 180,100 C180,55 145,20 100,20 Z" 
+                    fill="#f0f0f0" stroke="#d1d5db" stroke-width="2" />
+                <path d="M70,80 C70,75 75,70 80,70 C85,70 90,75 90,80 C90,85 85,90 80,90 C75,90 70,85 70,80 Z" 
+                    fill="#3b82f6" />
+                <path d="M110,80 C110,75 115,70 120,70 C125,70 130,75 130,80 C130,85 125,90 120,90 C115,90 110,85 110,80 Z" 
+                    fill="#3b82f6" />
+                <path d="M60,110 C90,150 110,150 140,110" 
+                    fill="none" stroke="#ef4444" stroke-width="3" stroke-linecap="round" />
+                <path d="M30,60 L45,60 M30,70 L40,70" 
+                    stroke="#d1d5db" stroke-width="2" stroke-linecap="round" />
+                <path d="M155,60 L170,60 M160,70 L170,70" 
+                    stroke="#d1d5db" stroke-width="2" stroke-linecap="round" />
+                <path d="M40,130 C60,160 140,160 160,130" 
+                    fill="none" stroke="#d1d5db" stroke-width="2" stroke-dasharray="5,5" />
+            </svg>
+        </div>
+        
+        <!-- Error code -->
+        <h1 class="text-9xl font-bold text-blue-600 mb-4">404</h1>
+        
+        <!-- Error message -->
+        <h2 class="text-3xl font-semibold text-gray-800 mb-6">Page Not Found</h2>
+        <p class="text-lg text-gray-600 max-w-md mb-8">
+            The scan of this page returned no results. It might have been moved, deleted, or never existed.
+        </p>
+        
+        <!-- Action buttons -->
+        <div class="flex flex-col    sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+            <a href="/dashboard" class="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg shadow-md hover:bg-blue-700 transition duration-300 flex items-center justify-center">
+                <i class="fas fa-home mr-2"></i> Go to Dashboard
+            </a>
+            <button onclick="window.history.back()" class="px-6 py-3 bg-gray-200 text-gray-800 font-medium rounded-lg shadow-md hover:bg-gray-300 transition duration-300 flex items-center justify-center">
+                <i class="fas fa-arrow-left mr-2"></i> Go Back
+            </button>
+        </div>
+        
+        <!-- Technical info section (collapsed by default) -->
+        <div class="mt-12 w-full max-w-md">
+            <div class="collapse-trigger cursor-pointer flex items-center justify-center text-gray-500 hover:text-gray-700" onclick="toggleDetails()">
+                <span id="details-text">Show Technical Details</span>
+                <i id="details-icon" class="fas fa-chevron-down ml-2 transition-transform duration-300"></i>
+            </div>
+            <div id="technical-details" class="overflow-hidden max-h-0 transition-all duration-300">
+                <div class="bg-white rounded-lg shadow-md mt-4 p-4 text-left">
+                    <p class="text-sm text-gray-600 mb-2">
+                        <span class="font-semibold">Request ID:</span> <span class="font-mono"><%= locals.requestId || 'Unknown' %></span>
+                    </p>
+                    <p class="text-sm text-gray-600 mb-2">
+                        <span class="font-semibold">URL:</span> <span class="font-mono"><%= locals.currentUrl || 'Unknown' %></span>
+                    </p>
+                    <p class="text-sm text-gray-600 mb-2">
+                        <span class="font-semibold">Time:</span> <span class="font-mono"><%= new Date().toISOString() %></span>
+                    </p>
+                    <% if (locals.errorDetails && process.env.NODE_ENV === 'development') { %>
+                    <p class="text-sm text-gray-600">
+                        <span class="font-semibold">Error:</span> <span class="font-mono"><%= locals.errorDetails %></span>
+                    </p>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleDetails() {
+            const details = document.getElementById('technical-details');
+            const icon = document.getElementById('details-icon');
+            const text = document.getElementById('details-text');
+            
+            if (details.classList.contains('max-h-0')) {
+                details.classList.remove('max-h-0');
+                details.classList.add('max-h-96');
+                icon.classList.add('transform', 'rotate-180');
+                text.innerText = 'Hide Technical Details';
+            } else {
+                details.classList.remove('max-h-96');
+                details.classList.add('max-h-0');
+                icon.classList.remove('transform', 'rotate-180');
+                text.innerText = 'Show Technical Details';
+            }
+        }
+    </script>
+</body>
+</html>

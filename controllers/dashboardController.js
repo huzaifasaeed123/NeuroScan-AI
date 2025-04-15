@@ -18,7 +18,9 @@ const getDashboard = async (req, res) => {
       monthlyCounts,
       findingsByType,
       recentPatients,
-      recentScans
+      recentScans,
+      // Add age distribution data from the Patient model
+      ageDistribution
     ] = await Promise.all([
       Patient.getCount(doctorId),
       Patient.getPatientGrowthPercentage(doctorId),
@@ -30,13 +32,15 @@ const getDashboard = async (req, res) => {
       Scan.getMonthlyCounts(doctorId),
       Scan.getScansByType(doctorId),
       Patient.getRecentWithStatus(doctorId, 5),
-      Scan.getRecentWithPatientInfo(doctorId, 5)
+      Scan.getRecentWithPatientInfo(doctorId, 5),
+      // Use the new Patient model method
+      Patient.getAgeDistribution(doctorId)
     ]);
     
     // Calculate positive findings percentage
     const positivePercentage = totalScans > 0 ? (positiveFindings / totalScans) * 100 : 0;
     
-    // Process monthly data for chart
+    // Process monthly data for chart (keeping this for backward compatibility)
     const monthLabels = [];
     const monthlyTotalScans = [];
     const monthlyPositiveFindings = [];
@@ -84,6 +88,7 @@ const getDashboard = async (req, res) => {
     
     // Prepare chart data
     const chartData = {
+      // Include the original scan trends data for backward compatibility
       scanTrends: {
         labels: monthLabels,
         totalScans: monthlyTotalScans,
@@ -92,7 +97,9 @@ const getDashboard = async (req, res) => {
       findingsByType: {
         labels: findingLabels,
         data: findingData
-      }
+      },
+      // Add age distribution data
+      ageDistribution: ageDistribution
     };
     
     // Prepare stats data
@@ -121,7 +128,8 @@ const getDashboard = async (req, res) => {
       stats,
       chartData,
       recentPatients,
-      recentScans
+      recentScans,
+      user // Make sure to include the user object
     });
     
   } catch (error) {

@@ -1,4 +1,3 @@
-
 <div class="flex-1 p-6 overflow-hidden bg-gray-100">
     <div class="mb-6">
         <p class="text-sm text-gray-600">Welcome Back, <%= user.name %></p>
@@ -65,11 +64,11 @@
 
     <!-- Charts Row -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <!-- Scan Trends Chart -->
+        <!-- Patient Age Distribution Chart (replacing Scan Trends Chart) -->
         <div class="bg-white rounded-lg shadow-sm p-6">
-            <h3 class="text-lg font-medium text-gray-800 mb-4">Scan Trends</h3>
+            <h3 class="text-lg font-medium text-gray-800 mb-4">Patient Age Distribution</h3>
             <div>
-                <canvas id="scanTrendsChart" height="300"></canvas>
+                <canvas id="ageDistributionChart" height="300"></canvas>
             </div>
         </div>
         
@@ -170,7 +169,6 @@
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Result</th>
-                        <!-- <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th> -->
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
@@ -197,10 +195,6 @@
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800"><%= scan.result %></span>
                                     <% } %>
                                 </td>
-                                <!-- <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <a href="/scans/<%= scan.id %>" class="text-blue-600 hover:text-blue-900 mr-3">View</a>
-                                    <a href="/reports/<%= scan.id %>" class="text-indigo-600 hover:text-indigo-900">Report</a>
-                                </td> -->
                             </tr>
                         <% }); %>
                     <% } else { %>
@@ -216,7 +210,11 @@
 
 <!-- Include chart data as JSON in a hidden div -->
 <div id="chartData" style="display: none;" 
-     data-scan-trends='<%= JSON.stringify(chartData.scanTrends) %>'
+     data-age-distribution='<%= JSON.stringify(chartData.ageDistribution || {
+        labels: ["0-10", "11-20", "21-30", "31-40", "41-50", "51-60", "61-70", "71+"],
+        allPatients: [0, 0, 0, 0, 0, 0, 0, 0],
+        patientsWithTumor: [0, 0, 0, 0, 0, 0, 0, 0]
+     }) %>'
      data-findings-by-type='<%= JSON.stringify(chartData.findingsByType) %>'>
 </div>
 
@@ -225,101 +223,157 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Safely parse data from hidden div
-        let scanTrendsData, findingsByTypeData;
+        let ageDistributionData, findingsByTypeData;
         
         try {
             const chartDataElement = document.getElementById('chartData');
-            scanTrendsData = JSON.parse(chartDataElement.getAttribute('data-scan-trends'));
-            findingsByTypeData = JSON.parse(chartDataElement.getAttribute('data-findings-by-type'));
+            
+            // Get age distribution data
+            const ageDistributionAttr = chartDataElement.getAttribute('data-age-distribution');
+            if (ageDistributionAttr) {
+                ageDistributionData = JSON.parse(ageDistributionAttr);
+            } else {
+                throw new Error('Age distribution data not found');
+            }
+            
+            // Get findings by type data
+            const findingsByTypeAttr = chartDataElement.getAttribute('data-findings-by-type');
+            if (findingsByTypeAttr) {
+                findingsByTypeData = JSON.parse(findingsByTypeAttr);
+            } else {
+                throw new Error('Findings by type data not found');
+            }
         } catch (error) {
             console.error('Error parsing chart data:', error);
-            // Provide fallback data if parsing fails
-            scanTrendsData = {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                totalScans: [0, 0, 0, 0, 0, 0],
-                positiveFindings: [0, 0, 0, 0, 0, 0]
-            };
-            findingsByTypeData = {
-                labels: ['No Data'],
-                data: [1]
-            };
+            // Handle the error gracefully without providing fallback data
         }
         
-        // Scan Trends Chart
-        const scanTrendsCtx = document.getElementById('scanTrendsChart').getContext('2d');
-        new Chart(scanTrendsCtx, {
-            type: 'line',
-            data: {
-                labels: scanTrendsData.labels,
-                datasets: [
-                    {
-                        label: 'Total Scans',
-                        data: scanTrendsData.totalScans,
-                        borderColor: 'rgba(16, 185, 129, 1)',
-                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                        tension: 0.3,
-                        fill: true
-                    },
-                    {
-                        label: 'Positive Findings',
-                        data: scanTrendsData.positiveFindings,
-                        borderColor: 'rgba(245, 158, 11, 1)',
-                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
-                        tension: 0.3,
-                        fill: true
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    title: {
-                        display: false
-                    }
+        // Create Patient Age Distribution Chart
+        if (ageDistributionData && ageDistributionData.labels) {
+            const ageDistributionCtx = document.getElementById('ageDistributionChart').getContext('2d');
+            new Chart(ageDistributionCtx, {
+                type: 'bar',
+                data: {
+                    labels: ageDistributionData.labels,
+                    datasets: [
+                        {
+                            label: 'All Patients',
+                            data: ageDistributionData.allPatients,
+                            backgroundColor: 'rgba(59, 130, 246, 0.6)', // Blue
+                            borderColor: 'rgba(59, 130, 246, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Patients with Tumor',
+                            data: ageDistributionData.patientsWithTumor,
+                            backgroundColor: 'rgba(239, 68, 68, 0.6)', // Red
+                            borderColor: 'rgba(239, 68, 68, 1)',
+                            borderWidth: 1
+                        }
+                    ]
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            precision: 0
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.dataset.label || '';
+                                    const value = context.raw || 0;
+                                    return `${label}: ${value} patients`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            },
+                            title: {
+                                display: true,
+                                text: 'Number of Patients'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Age Group'
+                            }
+                        }
+                    },
+                    barPercentage: 0.8,
+                    categoryPercentage: 0.8
+                }
+            });
+        } else {
+            // Display a message if age distribution data is not available
+            const ageDistributionCanvas = document.getElementById('ageDistributionChart');
+            if (ageDistributionCanvas) {
+                const ctx = ageDistributionCanvas.getContext('2d');
+                ctx.font = '14px Arial';
+                ctx.fillStyle = '#666';
+                ctx.textAlign = 'center';
+                ctx.fillText('Age distribution data not available', ageDistributionCanvas.width / 2, 150);
+            }
+        }
+
+        // Findings by Type Chart
+        if (findingsByTypeData && findingsByTypeData.labels) {
+            const findingsCtx = document.getElementById('findingsChart').getContext('2d');
+            new Chart(findingsCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: findingsByTypeData.labels,
+                    datasets: [{
+                        data: findingsByTypeData.data,
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.8)',
+                            'rgba(16, 185, 129, 0.8)',
+                            'rgba(245, 158, 11, 0.8)',
+                            'rgba(239, 68, 68, 0.8)',
+                            'rgba(139, 92, 246, 0.8)',
+                            'rgba(249, 115, 22, 0.8)',
+                            'rgba(147, 197, 253, 0.8)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
+                            }
                         }
                     }
                 }
+            });
+        } else {
+            // Display a message if findings data is not available
+            const findingsCanvas = document.getElementById('findingsChart');
+            if (findingsCanvas) {
+                const ctx = findingsCanvas.getContext('2d');
+                ctx.font = '14px Arial';
+                ctx.fillStyle = '#666';
+                ctx.textAlign = 'center';
+                ctx.fillText('Findings data not available', findingsCanvas.width / 2, 150);
             }
-        });
-
-        // Findings by Type Chart
-        const findingsCtx = document.getElementById('findingsChart').getContext('2d');
-        new Chart(findingsCtx, {
-            type: 'doughnut',
-            data: {
-                labels: findingsByTypeData.labels,
-                datasets: [{
-                    data: findingsByTypeData.data,
-                    backgroundColor: [
-                        'rgba(59, 130, 246, 0.8)',
-                        'rgba(16, 185, 129, 0.8)',
-                        'rgba(245, 158, 11, 0.8)',
-                        'rgba(239, 68, 68, 0.8)',
-                        'rgba(139, 92, 246, 0.8)',
-                        'rgba(249, 115, 22, 0.8)',
-                        'rgba(147, 197, 253, 0.8)'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'right',
-                    }
-                }
-            }
-        });
+        }
         
         // Mobile menu toggle
         const menuButton = document.querySelector('button.md\\:hidden');

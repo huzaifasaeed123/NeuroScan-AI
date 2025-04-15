@@ -22,7 +22,6 @@ const createDoctorsTable = `
 
 // Example: Patients Table
 const createPatientsTable = `
-  -- Patients Table
 CREATE TABLE IF NOT EXISTS patients (
   patient_id INT AUTO_INCREMENT PRIMARY KEY,
   doctor_id INT NOT NULL,
@@ -42,30 +41,25 @@ CREATE TABLE IF NOT EXISTS patients (
 // Example: Scans Table
 const createScansTable = `
   CREATE TABLE IF NOT EXISTS scans (
-    scan_id INT AUTO_INCREMENT PRIMARY KEY,
-    patient_id INT NOT NULL,
-    image_file_path VARCHAR(255) NOT NULL,
-    upload_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    scan_type VARCHAR(50),
-    description TEXT,
-    status VARCHAR(50),
-    FOREIGN KEY (patient_id) REFERENCES patients(patient_id) ON DELETE CASCADE
-  )
+  scan_id INT AUTO_INCREMENT PRIMARY KEY,
+  patient_id INT NOT NULL,
+  image_file_path VARCHAR(255) NOT NULL,
+  segmented_image_path VARCHAR(255),
+  upload_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  scan_type VARCHAR(50),
+  description TEXT,
+  status VARCHAR(50) DEFAULT 'pending',
+  cancer_detected BOOLEAN DEFAULT FALSE,
+  cancer_type VARCHAR(50),
+  glioma_probability DECIMAL(5,2),
+  meningioma_probability DECIMAL(5,2),
+  pituitary_probability DECIMAL(5,2),
+  no_tumor_probability DECIMAL(5,2),
+  doctor_Note Text,
+  FOREIGN KEY (patient_id) REFERENCES patients(patient_id) ON DELETE CASCADE
+);
 `;
 
-// Example: Results Table
-const createResultsTable = `
-  CREATE TABLE IF NOT EXISTS results (
-    result_id INT AUTO_INCREMENT PRIMARY KEY,
-    scan_id INT NOT NULL,
-    cancer_detected BOOLEAN NOT NULL,
-    cancer_type VARCHAR(50),
-    confidence_score DECIMAL(5,2),
-    additional_info JSON,
-    analyzed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (scan_id) REFERENCES scans(scan_id) ON DELETE CASCADE
-  )
-`;
 
 async function initDB() {
   try {

@@ -88,7 +88,10 @@ app.use('/dashboard', dashboardRoutes);
 app.use((req, res, next) => {
   res.status(404).render('error', { 
     message: 'Page not found',
-    error: { status: 404 }
+    error: { status: 404 },
+    layout: false, // Disable layout
+
+
   });
 });
 

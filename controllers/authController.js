@@ -8,7 +8,7 @@ const AuthController = {
       title: 'Login',
       layout: false, // Disable layout
       activeTab: 'login',
-      messages: req.flash()
+      // messages: req.flash()
     });
   },
 
@@ -18,7 +18,7 @@ const AuthController = {
       title: 'Sign Up',
       layout: false, // Disable layout
       activeTab: 'signup',
-      messages: req.flash()
+      // messages: req.flash()
     });
   },
 
@@ -49,7 +49,7 @@ postLogin: (req, res, next) => {
         req.session.last_name = user.last_name;
         req.session.userEmail = user.email;
         req.session.specialization = user.specialization || 'doctor';
-        console.log('User authenticated:', req.isAuthenticated());
+        // console.log('User authenticated:', req.isAuthenticated());
         
         return res.redirect('/dashboard');
       });
@@ -64,29 +64,35 @@ postLogin: (req, res, next) => {
       const errors = [];
       
       if (!firstName || !lastName || !email || !password || !confirmPassword) {
+        req.flash("error_msg","Please fill in all required fields")
         errors.push({ msg: 'Please fill in all required fields' });
       }
       
       if (password !== confirmPassword) {
+        req.flash("error_msg","Passwords do not match")
         errors.push({ msg: 'Passwords do not match' });
       }
       
       if (password.length < 8) {
+        req.flash("error_msg","Password should be at least 8 characters")
         errors.push({ msg: 'Password should be at least 8 characters' });
       }
       
       if (!agreeTerms) {
+        req.flash("error_msg","You must agree to the Terms of Service and Privacy Policy")
         errors.push({ msg: 'You must agree to the Terms of Service and Privacy Policy' });
       }
       
       // Check if email already exists
       const existingDoctor = await Doctor.findByEmail(email);
       if (existingDoctor) {
+        req.flash("error_msg","Email is already registered")
         errors.push({ msg: 'Email is already registered' });
       }
       
       if (errors.length > 0) {
-        req.flash('success_msg', errors.msg);
+        // console.log( errors.msg)
+        // req.flash('success_msg', "Gettting Error");
         return res.redirect('signup');
       }
       

@@ -247,6 +247,76 @@ getRecentWithStatus: (doctorId, limit = 5) => {
       }
     );
   });
+},
+
+
+// NEW METHOD: Get the age distribution of patients, including tumor cases
+getAgeDistribution: (doctorId) => {
+  return new Promise((resolve, reject) => {
+    connection.query(
+      `SELECT 
+        CASE 
+          WHEN date_of_birth IS NULL THEN 'Unknown'
+          WHEN TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) <= 10 THEN '0-10'
+          WHEN TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) <= 20 THEN '11-20'
+          WHEN TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) <= 30 THEN '21-30'
+          WHEN TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) <= 40 THEN '31-40'
+          WHEN TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) <= 50 THEN '41-50'
+          WHEN TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) <= 60 THEN '51-60'
+          WHEN TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) <= 70 THEN '61-70'
+          ELSE '71+'
+        END AS age_group,
+        COUNT(DISTINCT p.patient_id) AS total_patients,
+        COUNT(DISTINCT CASE WHEN s.cancer_detected = TRUE THEN p.patient_id END) AS patients_with_tumor
+      FROM 
+        patients p
+      LEFT JOIN 
+        scans s ON p.patient_id = s.patient_id
+      WHERE 
+        p.doctor_id = ?
+      GROUP BY 
+        age_group
+      ORDER BY 
+        FIELD(age_group, '0-10', '11-20', '21-30', '31-40', '41-50', '51-60', '61-70', '71+', 'Unknown')`,
+      [doctorId],
+      (error, results) => {
+        if (error) {
+          console.error('Error getting patient age distribution:', error);
+          return reject(error);
+        }
+        
+        // Process the results into the format needed for the chart
+        // Only include age groups that have data
+        const labels = [];
+        const allPatients = [];
+        const patientsWithTumor = [];
+        
+        // Fill in actual values
+        results.forEach(row => {
+          if (row.total_patients > 0) { // Only include groups with patients
+            labels.push(row.age_group);
+            allPatients.push(row.total_patients);
+            patientsWithTumor.push(row.patients_with_tumor || 0);
+          }
+        });
+        
+        // If no data found, return empty arrays
+        if (labels.length === 0) {
+          return resolve({
+            labels: [],
+            allPatients: [],
+            patientsWithTumor: []
+          });
+        }
+        
+        return resolve({
+          labels: labels,
+          allPatients: allPatients,
+          patientsWithTumor: patientsWithTumor
+        });
+      }
+    );
+  });
 }
 };
 

@@ -48,7 +48,10 @@
                 </label>
                 <input
                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="contactNumber" name="contactNumber" type="tel" placeholder="+92 3471729745"
+                    id="contactNumber" name="contactNumber" type="tel" pattern="[\+]?[0-9]{10,15}"
+                    placeholder="+92 3471729745" maxlength="15"
+                    oninput="this.value = this.value.replace(/[^0-9+\s-]/g, '')"
+                    title="Please enter a valid phone number (10-15 digits with optional + prefix)"
                     value="<%= patient.contact_number %>">
             </div>
             <div>
@@ -102,13 +105,13 @@
         }
 
 
-         // Calculate date 18 years ago
+        // Calculate date 18 years ago
         const today = new Date();
         const eighteenYearsAgo = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
-        
+
         // Format date as YYYY-MM-DD for the input max attribute
         const maxDate = eighteenYearsAgo.toISOString().split('T')[0];
-        
+
         // Set the max attribute
         document.getElementById('dateOfBirth').setAttribute('max', maxDate);
     });
