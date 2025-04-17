@@ -1,3 +1,4 @@
 node_modules/
 .env
 basic_HCI_Flow/
+public/
